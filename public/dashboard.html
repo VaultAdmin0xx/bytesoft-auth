@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteSoft — Dashboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(160deg, #041C32 0%, #04293A 45%, #0A5C7A 100%);
+      color: #EAF6FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(10, 92, 122, 0.18);
+      border: 1px solid rgba(46, 196, 230, 0.3);
+      border-radius: 10px;
+      padding: 32px;
+      backdrop-filter: blur(6px);
+    }
+    h2 { margin: 0 0 8px; }
+    p { color: #9FD8E8; font-size: 14px; }
+    button {
+      margin-top: 20px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #2EC4E6, #0A5C7A);
+      color: #04293A;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 id="greeting">Loading…</h2>
+    <p>This page is only reachable when the server sees a valid session.</p>
+    <button id="logout-btn">Log out</button>
+  </div>
+
+  <script>
+    async function checkAuth() {
+      const res = await fetch('/api/dashboard-data');
+      if (res.status === 401) {
+        window.location.href = '/index.html';
+        return;
+      }
+      const data = await res.json();
+      document.getElementById('greeting').textContent = data.message;
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/index.html';
+    });
+
+    checkAuth();
+  </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> ByteSoft — Login </title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(160deg, #041C32 0%, #04293A 45%, #0A5C7A 100%);
+      color: #EAF6FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .brand {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2EC4E6, #0A5C7A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      color: #04293A;
+      box-shadow: 0 0 18px rgba(46, 196, 230, 0.45);
+      flex-shrink: 0;
+    }
+    .brand-name {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .login-container {
+      width: 100%;
+      max-width: 360px;
+      background: rgba(10, 92, 122, 0.18);
+      border: 1px solid rgba(46, 196, 230, 0.3);
+      border-radius: 10px;
+      padding: 32px;
+      backdrop-filter: blur(6px);
+      text-align: left;
+    }
+    .login-container h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+    .login-container .subtitle {
+      margin: 0 0 24px;
+      font-size: 13px;
+      color: #9FD8E8;
+    }
+    .field { margin-bottom: 16px; }
+    label {
+      display: block;
+      font-size: 12.5px;
+      color: #9FD8E8;
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(46, 196, 230, 0.3);
+      background: rgba(4, 41, 58, 0.6);
+      color: #EAF6FA;
+      font-size: 14px;
+      outline: none;
+    }
+    button.submit-btn {
+      width: 100%;
+      padding: 11px;
+      margin-top: 6px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #2EC4E6, #0A5C7A);
+      color: #04293A;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button.submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .toggle-row {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #9FD8E8;
+      text-align: center;
+    }
+    .toggle-row a {
+      color: #2EC4E6;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .message {
+      margin: 0 0 16px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      display: none;
+    }
+    .message.error {
+      display: block;
+      background: rgba(230, 60, 60, 0.15);
+      border: 1px solid rgba(230, 60, 60, 0.4);
+      color: #FFC9C9;
+    }
+    .message.success {
+      display: block;
+      background: rgba(46, 230, 130, 0.12);
+      border: 1px solid rgba(46, 230, 130, 0.35);
+      color: #B9F5D0;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="logo-mark">B</div>
+    <div class="brand-name">ByteSoft</div>
+  </div>
+
+  <div class="login-container">
+    <h2 id="form-title">Welcome back</h2>
+    <p class="subtitle" id="form-subtitle">Log in to your ByteSoft account</p>
+
+    <div class="message" id="message"></div>
+
+    <form id="auth-form">
+      <div class="field hidden" id="email-field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" autocomplete="username" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="submit-btn" id="submit-btn">Log In</button>
+    </form>
+
+    <div class="toggle-row">
+      <span id="toggle-text">Don't have an account?</span>
+      <a id="toggle-link">Sign up</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('auth-form');
+    const messageEl = document.getElementById('message');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleLink = document.getElementById('toggle-link');
+    const toggleText = document.getElementById('toggle-text');
+    const formTitle = document.getElementById('form-title');
+    const formSubtitle = document.getElementById('form-subtitle');
+    const emailField = document.getElementById('email-field');
+
+    let mode = 'login'; // or 'register'
+
+    function showMessage(text, type) {
+      messageEl.textContent = text;
+      messageEl.className = 'message ' + type;
+    }
+
+    function clearMessage() {
+      messageEl.className = 'message';
+      messageEl.textContent = '';
+    }
+
+    toggleLink.addEventListener('click', () => {
+      mode = mode === 'login' ? 'register' : 'login';
+      clearMessage();
+      if (mode === 'register') {
+        formTitle.textContent = 'Create an account';
+        formSubtitle.textContent = 'Sign up for ByteSoft';
+        submitBtn.textContent = 'Sign Up';
+        toggleText.textContent = 'Already have an account?';
+        toggleLink.textContent = 'Log in';
+        emailField.classList.remove('hidden');
+      } else {
+        formTitle.textContent = 'Welcome back';
+        formSubtitle.textContent = 'Log in to your ByteSoft account';
+        submitBtn.textContent = 'Log In';
+        toggleText.textContent = "Don't have an account?";
+        toggleLink.textContent = 'Sign up';
+        emailField.classList.add('hidden');
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage();
+      submitBtn.disabled = true;
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
+
+      const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
+      const body = mode === 'login' ? { username, password } : { username, password, email };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showMessage(data.error || 'Something went wrong.', 'error');
+          return;
+        }
+
+        if (mode === 'login') {
+          showMessage('Login successful — redirecting…', 'success');
+          setTimeout(() => { window.location.href = '/dashboard.html'; }, 600);
+        } else {
+          showMessage('Account created! You can log in now.', 'success');
+          toggleLink.click(); // flip back to login form
+        }
+      } catch (err) {
+        showMessage('Could not reach the server. Is it running?', 'error');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
