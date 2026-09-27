@@ -11,58 +11,534 @@
       font-family: 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(160deg, #041C32 0%, #04293A 45%, #0A5C7A 100%);
       color: #EAF6FA;
+      min-height: 100vh;
+      padding: 28px;
+    }
+    a { color: #2EC4E6; text-decoration: none; }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .topbar h1 {
+      font-size: 24px;
+      margin: 0;
+      font-weight: 600;
+    }
+    .username {
+      font-size: 20px;
+      color: #2EC4E6;
+      font-weight: 600;
+    }
+    .topbar-spacer { flex: 1; }
+    .topbar-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: #E63946;
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .logout-link {
+      font-size: 13px;
+      cursor: pointer;
+      color: #9FD8E8;
+      background: none;
+      border: 1px solid rgba(46, 196, 230, 0.3);
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .logout-link:hover {
+      background: rgba(46, 196, 230, 0.1);
+    }
+
+    /* ---------- Notification panel ---------- */
+    #notification-panel {
+      position: fixed;
+      top: 60px;
+      right: 28px;
+      width: 300px;
+      background: #04293A;
+      border: 1px solid rgba(46, 196, 230, 0.35);
+      border-radius: 10px;
+      padding: 16px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    #notification-panel.open { display: block; }
+    .notif-item {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(46, 196, 230, 0.15);
+      font-size: 13px;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-title { font-weight: 600; color: #2EC4E6; }
+    .notif-text { color: #9FD8E8; margin-top: 4px; }
+
+    /* ---------- Main layout ---------- */
+    .main-content {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
     }
     .card {
-      width: 100%;
-      max-width: 420px;
       background: rgba(10, 92, 122, 0.18);
       border: 1px solid rgba(46, 196, 230, 0.3);
       border-radius: 10px;
-      padding: 32px;
+      padding: 22px;
       backdrop-filter: blur(6px);
     }
-    h2 { margin: 0 0 8px; }
-    p { color: #9FD8E8; font-size: 14px; }
-    button {
-      margin-top: 20px;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 6px;
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 16px;
+      color: #9FD8E8;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(46, 196, 230, 0.12);
+      font-size: 14px;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-item .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #2EC4E6; flex-shrink: 0;
+    }
+    .main-col { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ---------- Account card with profile icon ---------- */
+    .account-card {
+      position: relative;
+    }
+    .account-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       background: linear-gradient(135deg, #2EC4E6, #0A5C7A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 12px rgba(46, 196, 230, 0.4);
+    }
+    .account-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .account-status {
+      font-size: 12px;
+      color: #9FD8E8;
+    }
+
+    /* ---------- Calendar ---------- */
+    .calendar-widget {
+      background: rgba(10, 92, 122, 0.18);
+      border: 1px solid rgba(46, 196, 230, 0.3);
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 20px;
+      font-size: 12px;
+    }
+    .calendar-title {
+      color: #9FD8E8;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-day-name {
+      text-align: center;
+      font-weight: 600;
+      color: #9FD8E8;
+      padding: 4px 0;
+    }
+    .cal-day {
+      text-align: center;
+      padding: 4px;
+      border-radius: 4px;
+      background: rgba(46, 196, 230, 0.08);
+      cursor: pointer;
+    }
+    .cal-day:hover { background: rgba(46, 196, 230, 0.2); }
+    .cal-day.holiday {
+      background: rgba(230, 57, 70, 0.25);
+      color: #FF9999;
+      font-weight: 600;
+    }
+    .holidays-list {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(46, 196, 230, 0.15);
+      font-size: 11px;
+    }
+    .holiday-item {
+      padding: 2px 0;
+      color: #FF9999;
+    }
+
+    /* ---------- Bottom bar ---------- */
+    .bottom-bar {
+      max-width: 1100px;
+      margin: 28px auto 0;
+      display: flex;
+      gap: 24px;
+      padding: 16px 22px;
+      background: rgba(10, 92, 122, 0.18);
+      border: 1px solid rgba(46, 196, 230, 0.3);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    /* ---------- Chat bot ---------- */
+    #chat-toggle {
+      position: fixed;
+      bottom: 26px;
+      right: 26px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2EC4E6, #0A5C7A);
+      border: none;
       color: #04293A;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(46, 196, 230, 0.5);
+      animation: hover-bounce 2.2s ease-in-out infinite;
+    }
+    @keyframes hover-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    #chat-panel {
+      position: fixed;
+      bottom: 96px;
+      right: 26px;
+      width: 320px;
+      max-width: calc(100vw - 40px);
+      max-height: 440px;
+      background: #04293A;
+      border: 1px solid rgba(46, 196, 230, 0.35);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    #chat-panel.open { display: flex; }
+    .chat-header {
+      background: rgba(46, 196, 230, 0.12);
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(46, 196, 230, 0.2);
+    }
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .msg { padding: 8px 10px; border-radius: 8px; max-width: 85%; line-height: 1.4; }
+    .msg.bot { background: rgba(46, 196, 230, 0.15); align-self: flex-start; }
+    .msg.user { background: rgba(46, 196, 230, 0.35); align-self: flex-end; color: #04293A; }
+    .chat-input-row {
+      display: flex;
+      border-top: 1px solid rgba(46, 196, 230, 0.2);
+    }
+    .chat-input-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #EAF6FA;
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+    .chat-input-row button {
+      background: none;
+      border: none;
+      color: #2EC4E6;
       font-weight: 700;
+      padding: 0 14px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2 id="greeting">Loading…</h2>
-    <p>This page is only reachable when the server sees a valid session.</p>
-    <button id="logout-btn">Log out</button>
+
+  <!-- Top bar with user and notifications -->
+  <div class="topbar">
+    <h1>Welcome, <span class="username" id="username-display">User</span></h1>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <div class="notification-bell" id="notification-bell" title="Notifications">
+        🔔
+        <div class="notification-badge" id="notif-badge">3</div>
+      </div>
+      <button class="logout-link" id="logout-btn">Log out</button>
+    </div>
+  </div>
+
+  <!-- Notification panel -->
+  <div id="notification-panel">
+    <div class="notif-item">
+      <div class="notif-title">✓ Profile Updated</div>
+      <div class="notif-text">Your account details are current</div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-title">📅 Meeting Reminder</div>
+      <div class="notif-text">Team Standup in 1 hour</div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-title">🎉 Welcome!</div>
+      <div class="notif-text">You've successfully signed in</div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <div class="grid">
+      <div class="main-col">
+        <div class="card">
+          <h2>Projects</h2>
+          <div id="projects-list">
+            <div class="list-item"><span class="dot"></span> Website Redesign — in progress</div>
+            <div class="list-item"><span class="dot"></span> Mobile App Beta — review</div>
+            <div class="list-item"><span class="dot"></span> Q4 Marketing Plan — not started</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Meeting Schedule</h2>
+          <div id="meetings-list">
+            <div class="list-item"><span class="dot"></span> Mon 9:30 AM — Team Standup</div>
+            <div class="list-item"><span class="dot"></span> Wed 2:00 PM — Client Review</div>
+            <div class="list-item"><span class="dot"></span> Fri 11:00 AM — Sprint Planning</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar -->
+      <div class="main-col">
+        <div class="card account-card">
+          <div class="account-header">
+            <div class="profile-icon">👤</div>
+            <div>
+              <div class="account-name" id="account-name">User Account</div>
+              <div class="account-status">Active</div>
+            </div>
+          </div>
+          <h2>Account Info</h2>
+          <div class="list-item"><span class="dot"></span> User ID: <span id="username-value">—</span></div>
+          <div class="list-item"><span class="dot"></span> Profile complete</div>
+          <div class="list-item"><span class="dot"></span> 3 notifications</div>
+          <div class="list-item"><span class="dot"></span> Last login: today</div>
+        </div>
+
+        <!-- Calendar widget -->
+        <div class="calendar-widget">
+          <div class="calendar-title">November 2026</div>
+          <div class="calendar-grid" id="calendar">
+            <!-- Generated by JavaScript -->
+          </div>
+          <div class="holidays-list">
+            <div class="holiday-item">🎉 Thanksgiving: Nov 26</div>
+            <div class="holiday-item">🎄 Christmas: Dec 25</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <a href="#">Contacts</a>
+    <a href="#">Help</a>
+  </div>
+
+  <!-- Chat bot -->
+  <button id="chat-toggle" title="Ask Byte">💬</button>
+  <div id="chat-panel">
+    <div class="chat-header">Byte — Assistant</div>
+    <div id="chat-messages">
+      <div class="msg bot">Hi! I'm Byte. Ask me anything about your account, projects, or meetings.</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Type a question…" />
+      <button id="chat-send">Send</button>
+    </div>
   </div>
 
   <script>
+    // ---- Auth check ----
     async function checkAuth() {
-      const res = await fetch('/api/dashboard-data');
-      if (res.status === 401) {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (!data.loggedIn) {
         window.location.href = '/index.html';
         return;
       }
-      const data = await res.json();
-      document.getElementById('greeting').textContent = data.message;
+      const username = data.username;
+      document.getElementById('username-display').textContent = username;
+      document.getElementById('username-value').textContent = username;
+      document.getElementById('account-name').textContent = username + "'s Account";
     }
 
+    checkAuth();
+
+    // ---- Logout ----
     document.getElementById('logout-btn').addEventListener('click', async () => {
       await fetch('/api/auth/logout', { method: 'POST' });
       window.location.href = '/index.html';
     });
 
-    checkAuth();
+    // ---- Notifications ----
+    const notifBell = document.getElementById('notification-bell');
+    const notifPanel = document.getElementById('notification-panel');
+    notifBell.addEventListener('click', () => {
+      notifPanel.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.notification-bell') && !e.target.closest('#notification-panel')) {
+        notifPanel.classList.remove('open');
+      }
+    });
+
+    // ---- Calendar ----
+    const holidays = [26]; // November 26 (Thanksgiving)
+    const calendarEl = document.getElementById('calendar');
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayNames.forEach(name => {
+      const cell = document.createElement('div');
+      cell.className = 'cal-day-name';
+      cell.textContent = name;
+      calendarEl.appendChild(cell);
+    });
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'cal-day';
+      empty.textContent = '';
+      calendarEl.appendChild(empty);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-day';
+      if (holidays.includes(day)) cell.classList.add('holiday');
+      cell.textContent = day;
+      calendarEl.appendChild(cell);
+    }
+
+    // ---- Chat bot ----
+    const faq = [
+      { keywords: ['log out', 'logout', 'sign out'], answer: 'Click the "Log out" button in the top-right corner.' },
+      { keywords: ['new project', 'create project'], answer: 'Project creation coming soon — for now, check the Projects card.' },
+      { keywords: ['reset password', 'forgot password'], answer: 'Contact support to reset your account.' },
+      { keywords: ['meeting', 'schedule'], answer: 'See the "Meeting Schedule" card for upcoming meetings.' },
+      { keywords: ['profile', 'user id', 'account'], answer: 'Your info is in the Account section on the right.' },
+      { keywords: ['contact', 'support', 'help'], answer: 'Use the Contacts or Help links at the bottom.' },
+      { keywords: ['secure', 'security', 'safe'], answer: 'Passwords are hashed, never stored plain. Sessions are secure.' },
+      { keywords: ['notification', 'bell'], answer: 'Click the bell icon to see your latest notifications.' },
+      { keywords: ['byte', 'assistant'], answer: 'I\'m Byte, your ByteSoft assistant. Ask away!' }
+    ];
+
+    function getBotReply(text) {
+      const lower = text.toLowerCase();
+      for (const entry of faq) {
+        if (entry.keywords.some(k => lower.includes(k))) return entry.answer;
+      }
+      return "Not sure about that — try the Help link or rephrase your question!";
+    }
+
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatPanel = document.getElementById('chat-panel');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+
+    chatToggle.addEventListener('click', () => {
+      chatPanel.classList.toggle('open');
+      if (chatPanel.classList.contains('open')) chatInput.focus();
+    });
+
+    function addMessage(text, sender) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + sender;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function handleSend() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      addMessage(text, 'user');
+      chatInput.value = '';
+      setTimeout(() => addMessage(getBotReply(text), 'bot'), 300);
+    }
+
+    chatSend.addEventListener('click', handleSend);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleSend();
+    });
   </script>
 </body>
 </html>
