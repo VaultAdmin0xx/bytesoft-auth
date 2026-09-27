@@ -150,6 +150,10 @@
         <label for="email">Email</label>
         <input type="email" id="email" name="email" autocomplete="email" />
       </div>
+      <div class="field hidden" id="name-field">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" autocomplete="name" />
+      </div>
       <div class="field">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" autocomplete="username" required />
@@ -176,8 +180,19 @@
     const formTitle = document.getElementById('form-title');
     const formSubtitle = document.getElementById('form-subtitle');
     const emailField = document.getElementById('email-field');
+    const nameField = document.getElementById('name-field');
+    const nameInput = document.getElementById('name');
 
     let mode = 'login'; // or 'register'
+
+    // ---- Local "users" record so a name entered at signup can be shown later. ----
+    // If your backend already returns { name } on login, that value wins automatically below.
+    function loadUsersDB() {
+      try { return JSON.parse(localStorage.getItem('bytesoft_users_db')) || {}; } catch { return {}; }
+    }
+    function saveUsersDB(db) {
+      localStorage.setItem('bytesoft_users_db', JSON.stringify(db));
+    }
 
     function showMessage(text, type) {
       messageEl.textContent = text;
@@ -199,6 +214,8 @@
         toggleText.textContent = 'Already have an account?';
         toggleLink.textContent = 'Log in';
         emailField.classList.remove('hidden');
+        nameField.classList.remove('hidden');
+        nameInput.required = true;
       } else {
         formTitle.textContent = 'Welcome back';
         formSubtitle.textContent = 'Log in to your ByteSoft account';
@@ -206,6 +223,9 @@
         toggleText.textContent = "Don't have an account?";
         toggleLink.textContent = 'Sign up';
         emailField.classList.add('hidden');
+        nameField.classList.add('hidden');
+        nameInput.required = false;
+        nameInput.value = '';
       }
     });
 
@@ -217,9 +237,12 @@
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
       const email = document.getElementById('email').value.trim();
+      const name = document.getElementById('name').value.trim();
 
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
-      const body = mode === 'login' ? { username, password } : { username, password, email };
+      const body = mode === 'login'
+        ? { username, password }
+        : { name, username, password, email };
 
       try {
         const res = await fetch(endpoint, {
@@ -235,9 +258,27 @@
         }
 
         if (mode === 'login') {
+          // Prefer a name returned by the backend; otherwise fall back to the
+          // name that was saved locally when this username signed up.
+          const usersDb = loadUsersDB();
+          const savedUser = usersDb[username];
+          const resolvedName = data.name || data.fullName || (savedUser && savedUser.name) || username;
+          const resolvedEmail = data.email || (savedUser && savedUser.email) || '';
+
+          localStorage.setItem('bytesoft_current_user', JSON.stringify({
+            username,
+            name: resolvedName,
+            email: resolvedEmail
+          }));
+
           showMessage('Login successful — redirecting…', 'success');
           setTimeout(() => { window.location.href = '/dashboard.html'; }, 600);
         } else {
+          // Remember the name/email for this username so login can show it later.
+          const usersDb = loadUsersDB();
+          usersDb[username] = { name, email };
+          saveUsersDB(usersDb);
+
           showMessage('Account created! You can log in now.', 'success');
           toggleLink.click(); // flip back to login form
         }

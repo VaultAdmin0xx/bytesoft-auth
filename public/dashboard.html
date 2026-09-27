@@ -79,12 +79,27 @@
     }
     .main-col { display: flex; flex-direction: column; gap: 20px; }
     .item-content { flex: 1; min-width: 0; }
-    .item-actions { display: flex; gap: 6px; }
+    .item-actions { display: flex; gap: 6px; align-items: center; }
     .icon-btn {
       width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(46,196,230,.3);
       background: rgba(46,196,230,.07); color: #2EC4E6; cursor: pointer; font-weight: 700;
     }
     .icon-btn:hover { background: rgba(46,196,230,.2); }
+    .more-wrap { position: relative; }
+    .more-btn { font-size: 18px; line-height: 1; padding-bottom: 4px; }
+    .item-menu {
+      position: absolute; right: 0; top: 34px; min-width: 110px; padding: 5px;
+      background: #04293A; border: 1px solid rgba(46,196,230,.35);
+      border-radius: 7px; box-shadow: 0 8px 22px rgba(0,0,0,.35);
+      display: none; z-index: 20;
+    }
+    .item-menu.open { display: block; }
+    .item-menu button {
+      display: block; width: 100%; border: 0; background: transparent; color: #EAF6FA;
+      text-align: left; padding: 8px 9px; border-radius: 5px; cursor: pointer; font-size: 12px;
+    }
+    .item-menu button:hover { background: rgba(46,196,230,.12); }
+    .item-menu .delete-menu-btn { color: #FF9999; }
     .empty-state { color: #9FD8E8; font-size: 13px; padding: 12px 0; }
 
     .account-card { position: relative; }
@@ -107,14 +122,30 @@
       background: rgba(10,92,122,.18); border: 1px solid rgba(46,196,230,.3);
       border-radius: 10px; padding: 14px; margin-top: 20px; font-size: 12px;
     }
-    .calendar-title { color:#9FD8E8; font-weight:600; margin-bottom:8px; text-transform:uppercase; }
+    .calendar-title-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+    .calendar-title { color:#9FD8E8; font-weight:600; text-transform:uppercase; }
+    .leave-btn {
+      display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
+      color:#04293A; background:linear-gradient(135deg,#2EC4E6,#0A5C7A);
+      border:none; border-radius:6px; padding:6px 9px; cursor:pointer; white-space:nowrap;
+    }
+    .leave-btn:hover { filter:brightness(1.08); }
     .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
     .cal-day-name { text-align:center; font-weight:600; color:#9FD8E8; padding:4px 0; }
     .cal-day { text-align:center; padding:4px; border-radius:4px; background:rgba(46,196,230,.08); cursor:pointer; }
     .cal-day:hover { background:rgba(46,196,230,.2); }
     .cal-day.holiday { background:rgba(230,57,70,.25); color:#FF9999; font-weight:600; }
+    .leave-balance {
+      margin-top:10px; padding:8px 9px; border-radius:6px; font-size:11.5px; font-weight:600;
+      background:rgba(46,196,230,.1); border:1px solid rgba(46,196,230,.25); color:#9FD8E8;
+    }
     .holidays-list { margin-top:8px; padding-top:8px; border-top:1px solid rgba(46,196,230,.15); font-size:11px; }
     .holiday-item { padding:2px 0; color:#FF9999; }
+    .leave-requests-list { margin-top:8px; padding-top:8px; border-top:1px solid rgba(46,196,230,.15); font-size:11px; }
+    .leave-request-item { padding:4px 0; display:flex; justify-content:space-between; gap:6px; }
+    .leave-status { font-weight:700; white-space:nowrap; }
+    .leave-status.approved { color:#7CE8A4; }
+    .leave-status.pending { color:#FFC96B; }
 
     .bottom-bar {
       max-width:1100px; margin:28px auto 0; display:flex; gap:24px; padding:16px 22px;
@@ -123,29 +154,70 @@
     }
     .bottom-bar a { cursor:pointer; }
 
+    .about-card {
+      max-width:1100px; margin:20px auto 0; padding:22px;
+      background:rgba(10,92,122,.18); border:1px solid rgba(46,196,230,.3);
+      border-radius:10px;
+    }
+    .about-card h2 {
+      margin:0 0 10px; font-size:16px; color:#9FD8E8; text-transform:uppercase; letter-spacing:.04em;
+    }
+    .about-card p { margin:0 0 10px; font-size:13.5px; line-height:1.6; color:#DCEFF5; }
+    .about-card p:last-child { margin-bottom:0; }
+
+    /* Leave dialog reuses the same look as the add/edit dialog */
+    #leave-dialog {
+      position:fixed; inset:0; background:rgba(2,15,27,.75); display:none; align-items:center;
+      justify-content:center; z-index:1300; padding:20px;
+    }
+    #leave-dialog.open { display:flex; }
+
+    /* z-index sits above page overlays (1200) and the add/edit dialog (1300) so
+       Byte stays reachable no matter which "screen" is open after login. */
     #chat-toggle {
       position:fixed; bottom:26px; right:26px; width:56px; height:56px; border-radius:50%;
       background:linear-gradient(135deg,#2EC4E6,#0A5C7A); border:none; color:#04293A;
       font-size:24px; cursor:pointer; box-shadow:0 4px 18px rgba(46,196,230,.5);
-      animation:hover-bounce 2.2s ease-in-out infinite; z-index:1100;
+      animation:hover-bounce 2.2s ease-in-out infinite; z-index:1500;
     }
     @keyframes hover-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
     #chat-panel {
       position:fixed; bottom:96px; right:26px; width:360px; max-width:calc(100vw - 40px);
       height:500px; background:#04293A; border:1px solid rgba(46,196,230,.35);
       border-radius:10px; display:none; flex-direction:column; overflow:hidden;
-      box-shadow:0 8px 30px rgba(0,0,0,.4); z-index:1099;
+      box-shadow:0 8px 30px rgba(0,0,0,.4); z-index:1499;
     }
     #chat-panel.open { display:flex; }
-    .chat-header { background:rgba(46,196,230,.12); padding:12px 14px; font-size:14px; font-weight:600; border-bottom:1px solid rgba(46,196,230,.2); }
+    #chat-panel.dragging { transition:none; user-select:none; }
+    /* Full-screen mode, toggled by the expand button in the header */
+    #chat-panel.maximized {
+      top:14px; left:14px; right:14px; bottom:14px;
+      width:auto !important; height:auto !important; max-width:none;
+    }
+    .chat-header {
+      background:rgba(46,196,230,.12); padding:12px 14px; font-size:14px; font-weight:600;
+      border-bottom:1px solid rgba(46,196,230,.2); cursor:move; user-select:none;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .chat-header-actions { display:flex; gap:6px; flex-shrink:0; }
+    .chat-header-actions button {
+      width:26px; height:26px; border-radius:6px; border:1px solid rgba(46,196,230,.3);
+      background:rgba(255,255,255,.06); color:#EAF6FA; font-size:13px; line-height:1;
+      cursor:pointer;
+    }
+    .chat-header-actions button:hover { background:rgba(46,196,230,.25); }
     .chat-subtitle { font-size:11px; color:#9FD8E8; font-weight:400; margin-top:3px; }
     #chat-messages { flex:1; overflow-y:auto; padding:12px 14px; display:flex; flex-direction:column; gap:8px; font-size:13px; }
     .msg { padding:8px 10px; border-radius:8px; max-width:90%; line-height:1.4; white-space:pre-wrap; }
     .msg.bot { background:rgba(46,196,230,.15); align-self:flex-start; }
     .msg.user { background:rgba(46,196,230,.35); align-self:flex-end; color:#04293A; }
-    .chat-input-row { display:flex; border-top:1px solid rgba(46,196,230,.2); }
+    .chat-input-row { display:flex; align-items:center; border-top:1px solid rgba(46,196,230,.2); }
     .chat-input-row input { flex:1; background:transparent; border:none; color:#EAF6FA; padding:10px 12px; font-size:13px; outline:none; }
     .chat-input-row button { background:none; border:none; color:#2EC4E6; font-weight:700; padding:0 14px; cursor:pointer; }
+    #chat-mic { font-size:16px; padding:0 10px !important; flex-shrink:0; }
+    #chat-mic.listening { color:#E63946; animation:mic-pulse 1s ease-in-out infinite; }
+    #chat-mic:disabled { color:#5A7C87; cursor:not-allowed; }
+    @keyframes mic-pulse { 0%,100%{opacity:1;} 50%{opacity:.35;} }
 
     /* Pages / modal panels */
     .page-overlay {
@@ -269,12 +341,17 @@
         </div>
 
         <div class="calendar-widget">
-          <div class="calendar-title" id="calendar-title">Current Month</div>
+          <div class="calendar-title-row">
+            <div class="calendar-title" id="calendar-title">Current Month</div>
+            <button type="button" class="leave-btn" id="apply-leave-btn" title="Apply for leave / half day">🌴 Apply Leave</button>
+          </div>
           <div class="calendar-grid" id="calendar"></div>
+          <div class="leave-balance" id="leave-balance">Paid leaves remaining this month: —</div>
           <div class="holidays-list">
             <div class="holiday-item">🎉 Thanksgiving: Nov 26</div>
             <div class="holiday-item">🎄 Christmas: Dec 25</div>
           </div>
+          <div class="leave-requests-list" id="leave-requests-list"></div>
         </div>
       </div>
     </div>
@@ -286,17 +363,30 @@
     <a id="support-link">Support</a>
   </div>
 
+  <div class="about-card">
+    <h2>About ByteSoft</h2>
+    <p>ByteSoft is a lightweight workspace dashboard for individuals and small teams. It brings your projects, meeting schedule, personal profile and leave requests together in one place, so you don't need to jump between separate tools to see what's going on.</p>
+    <p>Ask Byte, the built-in assistant, to summarize your dashboard, add or edit projects and meetings, open your profile, or apply for leave — by typing or speaking into the mic. Your dashboard data is kept in this browser (and synced to your account if a backend is connected), so it's ready whenever you log back in.</p>
+  </div>
+
   <button id="chat-toggle" title="Ask Byte">💬</button>
   <div id="chat-panel">
-    <div class="chat-header">
-      Byte — Assistant
-      <div class="chat-subtitle">I can read this dashboard and help manage projects, meetings and your profile.</div>
+    <div class="chat-header" id="chat-header">
+      <div>
+        Byte — Assistant
+        <div class="chat-subtitle">I can read this dashboard and help manage projects, meetings and your profile.</div>
+      </div>
+      <div class="chat-header-actions">
+        <button type="button" id="chat-expand" title="Expand to full screen">⛶</button>
+        <button type="button" id="chat-close" title="Close">✕</button>
+      </div>
     </div>
     <div id="chat-messages">
-      <div class="msg bot">Hi! I'm Byte. I can analyze your dashboard and help you add, edit or remove projects and meetings, or open your profile. Try: "add a project", "edit meeting 1", or "show my profile".</div>
+      <div class="msg bot">Hi! I'm Byte. I can analyze your dashboard and help you add, edit or remove projects and meetings, open your profile, or apply for leave. Try: "add a project", "edit meeting 1", "apply for leave", or "show my profile". Tap 🎤 to talk to me, drag this header (or my floating icon) to move me, or hit ⛶ to go full screen.</div>
     </div>
     <div class="chat-input-row">
       <input type="text" id="chat-input" placeholder="Ask Byte to manage your dashboard…" />
+      <button type="button" id="chat-mic" title="Speak to Byte">🎤</button>
       <button id="chat-send">Send</button>
     </div>
   </div>
@@ -310,7 +400,7 @@
       </div>
       <p class="section-note">View and edit the information stored for your dashboard profile. Changes are saved in this browser and can also be sent to your backend API.</p>
       <div class="profile-grid">
-        <div class="profile-field"><label>Full name</label><div id="profile-name-display" class="value"></div></div>
+        <div class="profile-field"><label>Full name</label><input id="profile-name-input" type="text" placeholder="Your full name"></div>
         <div class="profile-field"><label>User ID / Username</label><div id="profile-username-display" class="value"></div></div>
         <div class="profile-field"><label>Email</label><input id="profile-email" type="email" placeholder="your@email.com"></div>
         <div class="profile-field"><label>Phone</label><input id="profile-phone" type="tel" placeholder="Phone number"></div>
@@ -364,6 +454,34 @@
     </div>
   </div>
 
+  <!-- Apply leave dialog -->
+  <div id="leave-dialog">
+    <div class="dialog">
+      <h3>Apply for Leave</h3>
+      <div class="form-row"><label>Date</label><input id="leave-date" type="date"></div>
+      <div class="form-row">
+        <label>Type</label>
+        <select id="leave-type">
+          <option value="full">Full day</option>
+          <option value="half">Half day</option>
+        </select>
+      </div>
+      <div class="form-row" id="leave-time-row" style="display:none;">
+        <label>Time</label>
+        <select id="leave-time">
+          <option value="Morning">Morning</option>
+          <option value="Afternoon">Afternoon</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Reason</label><textarea id="leave-reason" placeholder="Why are you taking leave?"></textarea></div>
+      <p class="section-note" style="margin:0 0 4px;">If you have enough paid leave left this month it's approved right away; otherwise it's sent to your manager for approval.</p>
+      <div class="dialog-actions">
+        <button class="close-btn" id="leave-cancel">Cancel</button>
+        <button class="primary-btn" id="leave-submit">Apply</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ==========================================================
     // ByteSoft Dashboard Frontend
@@ -387,6 +505,11 @@
     let dialogMode = null;
     let dialogIndex = -1;
 
+    // ---- Leave / half-day requests ----
+    const MONTHLY_PAID_LEAVE_QUOTA = 2; // paid leaves available per calendar month
+    let leaveBalances = loadJSON('bytesoft_leave_balances', {});   // { "2026-09": 1.5, ... }
+    let leaveRequests = loadJSON('bytesoft_leave_requests', []);   // most recent first
+
     function loadJSON(key, fallback) {
       try {
         const value = localStorage.getItem(key);
@@ -401,25 +524,63 @@
     }
 
     // ---- Auth check / user name ----
+    function loadLocalUser() {
+      try { return JSON.parse(localStorage.getItem('bytesoft_current_user')) || null; } catch { return null; }
+    }
+
+    // Different backends name this field differently — check the common variants,
+    // including a nested "user" object, before giving up.
+    function extractName(data) {
+      if (!data) return '';
+      const nested = data.user || data.profile || {};
+      const candidate =
+        data.name || data.fullName || data.full_name || data.displayName ||
+        nested.name || nested.fullName || nested.full_name || nested.displayName || '';
+      return String(candidate).trim();
+    }
+    function extractUsername(data) {
+      if (!data) return '';
+      const nested = data.user || {};
+      return String(data.username || data.userId || nested.username || nested.userId || '').trim();
+    }
+    function extractEmail(data) {
+      if (!data) return '';
+      const nested = data.user || {};
+      return String(data.email || nested.email || '').trim();
+    }
+
     async function checkAuth() {
+      // The name/username saved by index.html (or edited on the Profile page) is
+      // what makes "Welcome, <name>" work even without a backend that returns a name.
+      const localUser = loadLocalUser();
+      if (localUser) {
+        currentUser.username = localUser.username || currentUser.username;
+        currentUser.name = localUser.name || currentUser.username || currentUser.name;
+        currentUser.email = localUser.email || currentUser.email;
+      }
+
       try {
         const res = await fetch('/api/auth/me');
         const data = await res.json();
 
         if (!data.loggedIn) {
-          window.location.href = '/index.html';
-          return;
+          if (!localUser) { window.location.href = '/index.html'; return; }
+        } else {
+          const backendUsername = extractUsername(data);
+          const backendName = extractName(data);
+          const backendEmail = extractEmail(data);
+          currentUser.username = backendUsername || currentUser.username;
+          // Never let a username-shaped value silently overwrite an already-known real name.
+          currentUser.name = backendName || currentUser.name;
+          currentUser.email = backendEmail || currentUser.email;
         }
 
-        currentUser.username = data.username || data.userId || 'User';
-        currentUser.name = data.name || data.fullName || data.username || 'User';
-
-        // If your signup API returns additional profile fields, use them.
-        currentUser.email = data.email || currentUser.email;
         profile.email = profile.email || currentUser.email || '';
         renderUser();
       } catch (error) {
         // Demo/local mode: keep the dashboard usable if the auth endpoint is unavailable.
+        // If someone actually logged in via index.html, localUser already filled in
+        // their real name above; otherwise this falls back to the generic default.
         renderUser();
         console.warn('Auth endpoint unavailable; running dashboard in local mode.', error);
       }
@@ -429,9 +590,9 @@
       const name = currentUser.name || currentUser.username || 'User';
       document.getElementById('username-display').textContent = name;
       document.getElementById('username-value').textContent = currentUser.username || name;
-      document.getElementById('account-name').textContent = name + "'s Account";
+      document.getElementById('account-name').textContent = name + " Account";
       document.getElementById('profile-page-title').textContent = name + "'s Profile";
-      document.getElementById('profile-name-display').textContent = name;
+      document.getElementById('profile-name-input').value = name;
       document.getElementById('profile-username-display').textContent = currentUser.username || '—';
       document.getElementById('profile-email').value = profile.email || '';
       document.getElementById('profile-phone').value = profile.phone || '';
@@ -445,6 +606,7 @@
     // ---- Logout ----
     document.getElementById('logout-btn').addEventListener('click', async () => {
       try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
+      localStorage.removeItem('bytesoft_current_user');
       window.location.href = '/index.html';
     });
 
@@ -468,8 +630,13 @@
           <span class="dot"></span>
           <div class="item-content"><strong>${esc(p.title)}</strong> — ${esc(p.details || 'no status')}</div>
           <div class="item-actions">
-            <button class="icon-btn" title="Edit project" onclick="openEdit('project', ${i})">✎</button>
-            <button class="icon-btn" title="Delete project" onclick="deleteItem('project', ${i})">×</button>
+            <div class="more-wrap">
+              <button class="icon-btn more-btn" title="Project options" aria-label="Project options">⋮</button>
+              <div class="item-menu">
+                <button type="button" onclick="openEdit('project', ${i}); closeItemMenus();">✎ Edit</button>
+                <button type="button" class="delete-menu-btn" onclick="deleteItem('project', ${i}); closeItemMenus();">× Delete</button>
+              </div>
+            </div>
           </div>
         </div>
       `).join('');
@@ -487,8 +654,13 @@
           <span class="dot"></span>
           <div class="item-content"><strong>${esc(m.time || 'No time')}</strong> — ${esc(m.title)}${m.details ? ' — ' + esc(m.details) : ''}</div>
           <div class="item-actions">
-            <button class="icon-btn" title="Edit meeting" onclick="openEdit('meeting', ${i})">✎</button>
-            <button class="icon-btn" title="Delete meeting" onclick="deleteItem('meeting', ${i})">×</button>
+            <div class="more-wrap">
+              <button class="icon-btn more-btn" title="Meeting options" aria-label="Meeting options">⋮</button>
+              <div class="item-menu">
+                <button type="button" onclick="openEdit('meeting', ${i}); closeItemMenus();">✎ Edit</button>
+                <button type="button" class="delete-menu-btn" onclick="deleteItem('meeting', ${i}); closeItemMenus();">× Delete</button>
+              </div>
+            </div>
           </div>
         </div>
       `).join('');
@@ -500,6 +672,26 @@
       document.getElementById('profile-complete').textContent =
         (profile.email || profile.phone || profile.role || profile.location || profile.about) ? 'Profile has editable details' : 'Profile complete';
     }
+
+    // ---- Item option menus (3-dot button) ----
+    function closeItemMenus() {
+      document.querySelectorAll('.item-menu.open').forEach(menu => menu.classList.remove('open'));
+    }
+
+    document.addEventListener('click', event => {
+      const moreButton = event.target.closest('.more-btn');
+      if (moreButton) {
+        event.stopPropagation();
+        const menu = moreButton.parentElement.querySelector('.item-menu');
+        const wasOpen = menu.classList.contains('open');
+        closeItemMenus();
+        if (!wasOpen) menu.classList.add('open');
+        return;
+      }
+      if (!event.target.closest('.item-menu')) closeItemMenus();
+    });
+
+    window.closeItemMenus = closeItemMenus;
 
     // ---- Add / Edit ----
     function openEdit(type, index = -1) {
@@ -539,6 +731,7 @@
         saveJSON('bytesoft_meetings', meetings);
       }
       document.getElementById('edit-dialog').classList.remove('open');
+      closeItemMenus();
       renderDashboard();
     };
 
@@ -564,12 +757,26 @@
     document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closePage(btn.dataset.close)));
 
     document.getElementById('save-profile').onclick = async () => {
+      const editedName = document.getElementById('profile-name-input').value.trim();
+      if (editedName) currentUser.name = editedName;
+
       profile.email = document.getElementById('profile-email').value.trim();
       profile.phone = document.getElementById('profile-phone').value.trim();
       profile.role = document.getElementById('profile-role').value.trim();
       profile.location = document.getElementById('profile-location').value.trim();
       profile.about = document.getElementById('profile-about').value.trim();
       saveJSON('bytesoft_profile', profile);
+
+      // Remember the (possibly corrected) name locally so "Welcome, ..." stays right
+      // across refreshes and future logins, even before/without a backend round-trip.
+      localStorage.setItem('bytesoft_current_user', JSON.stringify({
+        username: currentUser.username, name: currentUser.name, email: currentUser.email
+      }));
+      try {
+        const usersDb = JSON.parse(localStorage.getItem('bytesoft_users_db') || '{}');
+        usersDb[currentUser.username] = { name: currentUser.name, email: currentUser.email };
+        localStorage.setItem('bytesoft_users_db', JSON.stringify(usersDb));
+      } catch {}
 
       // Optional backend hook. Your server can implement this endpoint for database persistence.
       try {
@@ -623,16 +830,286 @@
       cell.textContent=day; calendarEl.appendChild(cell);
     }
 
+    // ---- Leave / half-day requests ----
+    const currentMonthKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+    function monthKeyFromDate(dateStr) {
+      if (!dateStr) return currentMonthKey;
+      const [y, m] = dateStr.split('-');
+      return `${y}-${m}`;
+    }
+    function getRemainingLeaves(key) {
+      if (!(key in leaveBalances)) leaveBalances[key] = MONTHLY_PAID_LEAVE_QUOTA;
+      return leaveBalances[key];
+    }
+    function formatLeaveType(req) {
+      return req.type === 'half' ? `Half day (${req.time || 'Half day'})` : 'Full day';
+    }
+
+    function renderLeaveBalance() {
+      const remaining = getRemainingLeaves(currentMonthKey);
+      document.getElementById('leave-balance').textContent =
+        `Paid leaves remaining this month: ${remaining}`;
+    }
+
+    function renderLeaveRequests() {
+      const el = document.getElementById('leave-requests-list');
+      if (!leaveRequests.length) { el.innerHTML = ''; return; }
+      el.innerHTML = leaveRequests.slice(0, 4).map(req => `
+        <div class="leave-request-item">
+          <span>${esc(req.date)} — ${esc(formatLeaveType(req))}</span>
+          <span class="leave-status ${req.status}">${req.status === 'approved' ? '✓ Approved' : '⏳ Pending'}</span>
+        </div>
+      `).join('');
+    }
+
+    renderLeaveBalance();
+    renderLeaveRequests();
+
+    const leaveDialog = document.getElementById('leave-dialog');
+    const leaveTypeSelect = document.getElementById('leave-type');
+    const leaveTimeRow = document.getElementById('leave-time-row');
+
+    function toggleLeaveTimeRow() {
+      leaveTimeRow.style.display = leaveTypeSelect.value === 'half' ? 'block' : 'none';
+    }
+    leaveTypeSelect.addEventListener('change', toggleLeaveTimeRow);
+
+    function openLeaveDialog() {
+      document.getElementById('leave-date').value = '';
+      leaveTypeSelect.value = 'full';
+      document.getElementById('leave-time').value = 'Morning';
+      document.getElementById('leave-reason').value = '';
+      toggleLeaveTimeRow();
+      leaveDialog.classList.add('open');
+    }
+    document.getElementById('apply-leave-btn').onclick = openLeaveDialog;
+    document.getElementById('leave-cancel').onclick = () => leaveDialog.classList.remove('open');
+
+    function submitLeave() {
+      const date = document.getElementById('leave-date').value;
+      const type = leaveTypeSelect.value;
+      const time = type === 'half' ? document.getElementById('leave-time').value : '';
+      const reason = document.getElementById('leave-reason').value.trim();
+
+      if (!date) { alert('Please choose a date.'); return null; }
+      if (!reason) { alert('Please add a reason for the leave.'); return null; }
+
+      const cost = type === 'half' ? 0.5 : 1;
+      const key = monthKeyFromDate(date);
+      const remaining = getRemainingLeaves(key);
+      const status = remaining >= cost ? 'approved' : 'pending';
+      if (status === 'approved') {
+        leaveBalances[key] = +(remaining - cost).toFixed(1);
+      }
+      saveJSON('bytesoft_leave_balances', leaveBalances);
+
+      const request = { id: crypto.randomUUID(), date, type, time, reason, status, createdAt: new Date().toISOString() };
+      leaveRequests.unshift(request);
+      saveJSON('bytesoft_leave_requests', leaveRequests);
+
+      leaveDialog.classList.remove('open');
+      renderLeaveBalance();
+      renderLeaveRequests();
+      return request;
+    }
+
+    document.getElementById('leave-submit').onclick = () => {
+      const request = submitLeave();
+      if (!request) return;
+      if (request.status === 'approved') {
+        alert(`Your ${formatLeaveType(request).toLowerCase()} leave on ${request.date} is approved — you had enough paid leave remaining.`);
+      } else {
+        alert(`Not enough paid leave remains this month, so your ${formatLeaveType(request).toLowerCase()} leave request on ${request.date} has been sent to your manager for approval.`);
+      }
+    };
+    window.openLeaveDialog = openLeaveDialog;
+
     // ---- Byte dashboard-aware assistant ----
     const chatToggle = document.getElementById('chat-toggle');
     const chatPanel = document.getElementById('chat-panel');
+    const chatHeader = document.getElementById('chat-header');
+    const chatExpand = document.getElementById('chat-expand');
+    const chatClose = document.getElementById('chat-close');
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
     const chatSend = document.getElementById('chat-send');
+    const chatMic = document.getElementById('chat-mic');
 
+    let toggleDragMoved = false;
     chatToggle.onclick = () => {
+      if (toggleDragMoved) { toggleDragMoved = false; return; }
       chatPanel.classList.toggle('open');
       if (chatPanel.classList.contains('open')) chatInput.focus();
+    };
+
+    chatClose.onclick = () => chatPanel.classList.remove('open');
+
+    // ---- Drag the floating Byte icon anywhere on screen (not just the open panel) ----
+    (function enableToggleDrag(btn) {
+      let dragging = false, offsetX = 0, offsetY = 0, startX = 0, startY = 0;
+
+      function begin(clientX, clientY) {
+        const rect = btn.getBoundingClientRect();
+        btn.style.left = rect.left + 'px';
+        btn.style.top = rect.top + 'px';
+        btn.style.right = 'auto';
+        btn.style.bottom = 'auto';
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
+        startX = clientX; startY = clientY;
+        dragging = true;
+        toggleDragMoved = false;
+      }
+      function move(clientX, clientY) {
+        if (!dragging) return;
+        if (Math.abs(clientX - startX) > 4 || Math.abs(clientY - startY) > 4) toggleDragMoved = true;
+        const maxLeft = Math.max(0, window.innerWidth - btn.offsetWidth);
+        const maxTop = Math.max(0, window.innerHeight - btn.offsetHeight);
+        const newLeft = Math.min(Math.max(0, clientX - offsetX), maxLeft);
+        const newTop = Math.min(Math.max(0, clientY - offsetY), maxTop);
+        btn.style.left = newLeft + 'px';
+        btn.style.top = newTop + 'px';
+      }
+      function end() { dragging = false; }
+
+      btn.addEventListener('mousedown', e => { begin(e.clientX, e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', e => move(e.clientX, e.clientY));
+      document.addEventListener('mouseup', end);
+
+      btn.addEventListener('touchstart', e => { const t = e.touches[0]; begin(t.clientX, t.clientY); }, { passive: true });
+      document.addEventListener('touchmove', e => { if (!dragging) return; const t = e.touches[0]; move(t.clientX, t.clientY); }, { passive: true });
+      document.addEventListener('touchend', end);
+    })(chatToggle);
+
+    // ---- Expand Byte to fill the whole screen, or restore it ----
+    chatExpand.onclick = () => {
+      const maximized = chatPanel.classList.toggle('maximized');
+      chatExpand.textContent = maximized ? '🗗' : '⛶';
+      chatExpand.title = maximized ? 'Restore' : 'Expand to full screen';
+    };
+
+    // ---- Drag Byte around the screen by its header ----
+    (function enableChatDrag(panel, handle) {
+      let dragging = false, offsetX = 0, offsetY = 0;
+
+      function beginDrag(clientX, clientY) {
+        if (panel.classList.contains('maximized')) return;
+        const rect = panel.getBoundingClientRect();
+        panel.style.left = rect.left + 'px';
+        panel.style.top = rect.top + 'px';
+        panel.style.right = 'auto';
+        panel.style.bottom = 'auto';
+        offsetX = clientX - rect.left;
+        offsetY = clientY - rect.top;
+        dragging = true;
+        panel.classList.add('dragging');
+      }
+      function moveDrag(clientX, clientY) {
+        if (!dragging) return;
+        const maxLeft = Math.max(0, window.innerWidth - panel.offsetWidth);
+        const maxTop = Math.max(0, window.innerHeight - panel.offsetHeight);
+        const newLeft = Math.min(Math.max(0, clientX - offsetX), maxLeft);
+        const newTop = Math.min(Math.max(0, clientY - offsetY), maxTop);
+        panel.style.left = newLeft + 'px';
+        panel.style.top = newTop + 'px';
+      }
+      function endDrag() {
+        dragging = false;
+        panel.classList.remove('dragging');
+      }
+
+      handle.addEventListener('mousedown', e => {
+        if (e.target.closest('button')) return;
+        beginDrag(e.clientX, e.clientY);
+        e.preventDefault();
+      });
+      document.addEventListener('mousemove', e => moveDrag(e.clientX, e.clientY));
+      document.addEventListener('mouseup', endDrag);
+
+      handle.addEventListener('touchstart', e => {
+        if (e.target.closest('button')) return;
+        const t = e.touches[0];
+        beginDrag(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchmove', e => {
+        if (!dragging) return;
+        const t = e.touches[0];
+        moveDrag(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchend', endDrag);
+    })(chatPanel, chatHeader);
+
+    // ---- Mic: speak to Byte instead of typing ----
+    const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let listening = false;
+
+    if (!SpeechRecognitionClass) {
+      chatMic.disabled = true;
+      chatMic.title = 'Voice input is not supported in this browser';
+    }
+
+    // A fresh instance per attempt avoids a known issue where a reused
+    // SpeechRecognition object silently stops returning results after first use.
+    function createRecognition() {
+      const r = new SpeechRecognitionClass();
+      r.lang = 'en-US';
+      r.continuous = false;
+      r.interimResults = false;
+      r.maxAlternatives = 1;
+
+      r.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        chatInput.value = transcript;
+        stopListening();
+        handleSend();
+      };
+      r.onerror = (event) => {
+        stopListening();
+        const reasons = {
+          'not-allowed': 'Microphone access is blocked for this site. Check your browser/site permissions and try again.',
+          'service-not-allowed': 'Microphone access is blocked for this site. Check your browser/site permissions and try again.',
+          'no-speech': "I didn't hear anything — try again and speak right after tapping the mic.",
+          'audio-capture': 'No microphone was found on this device.',
+          'network': 'Voice recognition needs a working connection to the speech service. Some browsers (e.g. Brave) block this by default — check your browser\'s shields/privacy settings, or try Chrome.'
+        };
+        addMessage(reasons[event.error] || `Voice input error: ${event.error}. Please try again or type your message.`, 'bot');
+      };
+      r.onend = () => stopListening();
+      return r;
+    }
+
+    function stopListening() {
+      listening = false;
+      chatMic.classList.remove('listening');
+      chatInput.placeholder = 'Ask Byte to manage your dashboard…';
+    }
+
+    chatMic.onclick = () => {
+      if (!SpeechRecognitionClass) {
+        addMessage('Voice input is not supported in this browser. Try Chrome on desktop or Android.', 'bot');
+        return;
+      }
+      if (listening) {
+        if (recognition) recognition.stop();
+        stopListening();
+        return;
+      }
+      if (!window.isSecureContext) {
+        addMessage('Voice input needs a secure (https) connection to work here.', 'bot');
+        return;
+      }
+      recognition = createRecognition();
+      listening = true;
+      chatMic.classList.add('listening');
+      chatInput.placeholder = 'Listening…';
+      try {
+        recognition.start();
+      } catch (e) {
+        stopListening();
+        addMessage('Could not start the microphone. Please try again.', 'bot');
+      }
     };
 
     function addMessage(text, sender) {
@@ -709,11 +1186,18 @@
       if (lower.includes('log out') || lower.includes('logout') || lower.includes('sign out')) {
         return 'Use the Log out button in the top-right corner.';
       }
+      if ((lower.includes('apply') || lower.includes('request')) && (lower.includes('leave') || lower.includes('half day') || lower.includes('halfday'))) {
+        openLeaveDialog();
+        return 'I opened the Apply Leave form. Fill in the date, type and reason.';
+      }
+      if (lower.includes('leave') && (lower.includes('remaining') || lower.includes('balance') || lower.includes('left'))) {
+        return `You have ${getRemainingLeaves(currentMonthKey)} paid leave(s) remaining this month.`;
+      }
       if (lower.includes('project')) return `You currently have ${projects.length} project(s). Say "show dashboard" for the full list.`;
       if (lower.includes('meeting') || lower.includes('schedule')) return `You currently have ${meetings.length} meeting(s). Say "show dashboard" for the full list.`;
       if (lower.includes('secure') || lower.includes('security')) return 'Dashboard security depends on your backend authentication, session handling, authorization and HTTPS configuration.';
 
-      return 'I can analyze this dashboard and help with projects, meetings, profile, FAQs and support. Try "show dashboard", "add a project", "edit meeting 1", or "show my profile".';
+      return 'I can analyze this dashboard and help with projects, meetings, profile, FAQs, support and leave requests. Try "show dashboard", "add a project", "apply for leave", or "show my profile".';
     }
 
     function handleSend() {
