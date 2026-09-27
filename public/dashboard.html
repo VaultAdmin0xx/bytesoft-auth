@@ -15,312 +15,206 @@
       padding: 28px;
     }
     a { color: #2EC4E6; text-decoration: none; }
+    button, input, textarea, select { font: inherit; }
 
-    /* ---------- Top bar ---------- */
     .topbar {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 28px;
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
+      display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+      max-width: 1100px; margin-left: auto; margin-right: auto;
     }
-    .topbar h1 {
-      font-size: 24px;
-      margin: 0;
-      font-weight: 600;
-    }
+    .topbar h1 { font-size: 24px; margin: 0; font-weight: 600; }
     .username {
-      font-size: 20px;
-      color: #2EC4E6;
-      font-weight: 600;
+      font-size: 20px; color: #2EC4E6; font-weight: 600;
+      cursor: pointer; text-decoration: underline; text-decoration-color: rgba(46,196,230,.3);
     }
     .topbar-spacer { flex: 1; }
-    .topbar-actions {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-    .notification-bell {
-      position: relative;
-      cursor: pointer;
-      font-size: 20px;
-    }
+    .topbar-actions { display: flex; gap: 16px; align-items: center; }
+    .notification-bell { position: relative; cursor: pointer; font-size: 20px; }
     .notification-badge {
-      position: absolute;
-      top: -6px;
-      right: -8px;
-      background: #E63946;
-      color: white;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
+      position: absolute; top: -6px; right: -8px; background: #E63946; color: white;
+      width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 11px; font-weight: 700;
     }
-    .logout-link {
-      font-size: 13px;
-      cursor: pointer;
-      color: #9FD8E8;
-      background: none;
-      border: 1px solid rgba(46, 196, 230, 0.3);
-      padding: 8px 14px;
-      border-radius: 6px;
-      transition: all 0.2s;
+    .logout-link, .small-btn {
+      font-size: 13px; cursor: pointer; color: #9FD8E8; background: none;
+      border: 1px solid rgba(46,196,230,.3); padding: 8px 14px; border-radius: 6px;
+      transition: all .2s;
     }
-    .logout-link:hover {
-      background: rgba(46, 196, 230, 0.1);
-    }
+    .logout-link:hover, .small-btn:hover { background: rgba(46,196,230,.1); }
 
-    /* ---------- Notification panel ---------- */
     #notification-panel {
-      position: fixed;
-      top: 60px;
-      right: 28px;
-      width: 300px;
-      background: #04293A;
-      border: 1px solid rgba(46, 196, 230, 0.35);
-      border-radius: 10px;
-      padding: 16px;
-      display: none;
-      z-index: 1000;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      max-height: 360px;
-      overflow-y: auto;
+      position: fixed; top: 60px; right: 28px; width: 300px; background: #04293A;
+      border: 1px solid rgba(46,196,230,.35); border-radius: 10px; padding: 16px;
+      display: none; z-index: 1000; box-shadow: 0 8px 30px rgba(0,0,0,.4);
+      max-height: 360px; overflow-y: auto;
     }
     #notification-panel.open { display: block; }
-    .notif-item {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(46, 196, 230, 0.15);
-      font-size: 13px;
-    }
+    .notif-item { padding: 10px 0; border-bottom: 1px solid rgba(46,196,230,.15); font-size: 13px; }
     .notif-item:last-child { border-bottom: none; }
     .notif-title { font-weight: 600; color: #2EC4E6; }
     .notif-text { color: #9FD8E8; margin-top: 4px; }
 
-    /* ---------- Main layout ---------- */
-    .main-content {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-    }
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+    .main-content { max-width: 1100px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
     .card {
-      background: rgba(10, 92, 122, 0.18);
-      border: 1px solid rgba(46, 196, 230, 0.3);
-      border-radius: 10px;
-      padding: 22px;
-      backdrop-filter: blur(6px);
+      background: rgba(10,92,122,.18); border: 1px solid rgba(46,196,230,.3);
+      border-radius: 10px; padding: 22px; backdrop-filter: blur(6px);
     }
     .card h2 {
-      margin: 0 0 14px;
-      font-size: 16px;
-      color: #9FD8E8;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      margin: 0 0 14px; font-size: 16px; color: #9FD8E8;
+      text-transform: uppercase; letter-spacing: .04em;
     }
+    .card-heading {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      margin-bottom: 8px;
+    }
+    .card-heading h2 { margin: 0; }
     .list-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 0;
-      border-bottom: 1px solid rgba(46, 196, 230, 0.12);
-      font-size: 14px;
+      display: flex; align-items: center; gap: 10px; padding: 9px 0;
+      border-bottom: 1px solid rgba(46,196,230,.12); font-size: 14px;
     }
     .list-item:last-child { border-bottom: none; }
     .list-item .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #2EC4E6; flex-shrink: 0;
+      width: 6px; height: 6px; border-radius: 50%; background: #2EC4E6; flex-shrink: 0;
     }
     .main-col { display: flex; flex-direction: column; gap: 20px; }
-
-    /* ---------- Account card with profile icon ---------- */
-    .account-card {
-      position: relative;
+    .item-content { flex: 1; min-width: 0; }
+    .item-actions { display: flex; gap: 6px; }
+    .icon-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(46,196,230,.3);
+      background: rgba(46,196,230,.07); color: #2EC4E6; cursor: pointer; font-weight: 700;
     }
+    .icon-btn:hover { background: rgba(46,196,230,.2); }
+    .empty-state { color: #9FD8E8; font-size: 13px; padding: 12px 0; }
+
+    .account-card { position: relative; }
     .account-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+      cursor: pointer; border-radius: 8px; padding: 4px;
     }
+    .account-header:hover { background: rgba(46,196,230,.07); }
     .profile-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #2EC4E6, #0A5C7A);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 0 12px rgba(46, 196, 230, 0.4);
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg,#2EC4E6,#0A5C7A); display: flex;
+      align-items: center; justify-content: center; font-size: 20px;
+      box-shadow: 0 0 12px rgba(46,196,230,.4);
     }
-    .account-name {
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .account-status {
-      font-size: 12px;
-      color: #9FD8E8;
-    }
+    .account-name { font-size: 14px; font-weight: 600; }
+    .account-status { font-size: 12px; color: #9FD8E8; }
+    .profile-hint { font-size: 11px; color: #75B9CA; margin-left: auto; }
 
-    /* ---------- Calendar ---------- */
     .calendar-widget {
-      background: rgba(10, 92, 122, 0.18);
-      border: 1px solid rgba(46, 196, 230, 0.3);
-      border-radius: 10px;
-      padding: 14px;
-      margin-top: 20px;
-      font-size: 12px;
+      background: rgba(10,92,122,.18); border: 1px solid rgba(46,196,230,.3);
+      border-radius: 10px; padding: 14px; margin-top: 20px; font-size: 12px;
     }
-    .calendar-title {
-      color: #9FD8E8;
-      font-weight: 600;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-    }
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-    }
-    .cal-day-name {
-      text-align: center;
-      font-weight: 600;
-      color: #9FD8E8;
-      padding: 4px 0;
-    }
-    .cal-day {
-      text-align: center;
-      padding: 4px;
-      border-radius: 4px;
-      background: rgba(46, 196, 230, 0.08);
-      cursor: pointer;
-    }
-    .cal-day:hover { background: rgba(46, 196, 230, 0.2); }
-    .cal-day.holiday {
-      background: rgba(230, 57, 70, 0.25);
-      color: #FF9999;
-      font-weight: 600;
-    }
-    .holidays-list {
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(46, 196, 230, 0.15);
-      font-size: 11px;
-    }
-    .holiday-item {
-      padding: 2px 0;
-      color: #FF9999;
-    }
+    .calendar-title { color:#9FD8E8; font-weight:600; margin-bottom:8px; text-transform:uppercase; }
+    .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+    .cal-day-name { text-align:center; font-weight:600; color:#9FD8E8; padding:4px 0; }
+    .cal-day { text-align:center; padding:4px; border-radius:4px; background:rgba(46,196,230,.08); cursor:pointer; }
+    .cal-day:hover { background:rgba(46,196,230,.2); }
+    .cal-day.holiday { background:rgba(230,57,70,.25); color:#FF9999; font-weight:600; }
+    .holidays-list { margin-top:8px; padding-top:8px; border-top:1px solid rgba(46,196,230,.15); font-size:11px; }
+    .holiday-item { padding:2px 0; color:#FF9999; }
 
-    /* ---------- Bottom bar ---------- */
     .bottom-bar {
-      max-width: 1100px;
-      margin: 28px auto 0;
-      display: flex;
-      gap: 24px;
-      padding: 16px 22px;
-      background: rgba(10, 92, 122, 0.18);
-      border: 1px solid rgba(46, 196, 230, 0.3);
-      border-radius: 10px;
-      font-size: 14px;
+      max-width:1100px; margin:28px auto 0; display:flex; gap:24px; padding:16px 22px;
+      background:rgba(10,92,122,.18); border:1px solid rgba(46,196,230,.3);
+      border-radius:10px; font-size:14px;
     }
+    .bottom-bar a { cursor:pointer; }
 
-    /* ---------- Chat bot ---------- */
     #chat-toggle {
-      position: fixed;
-      bottom: 26px;
-      right: 26px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #2EC4E6, #0A5C7A);
-      border: none;
-      color: #04293A;
-      font-size: 24px;
-      cursor: pointer;
-      box-shadow: 0 4px 18px rgba(46, 196, 230, 0.5);
-      animation: hover-bounce 2.2s ease-in-out infinite;
+      position:fixed; bottom:26px; right:26px; width:56px; height:56px; border-radius:50%;
+      background:linear-gradient(135deg,#2EC4E6,#0A5C7A); border:none; color:#04293A;
+      font-size:24px; cursor:pointer; box-shadow:0 4px 18px rgba(46,196,230,.5);
+      animation:hover-bounce 2.2s ease-in-out infinite; z-index:1100;
     }
-    @keyframes hover-bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
+    @keyframes hover-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
     #chat-panel {
-      position: fixed;
-      bottom: 96px;
-      right: 26px;
-      width: 320px;
-      max-width: calc(100vw - 40px);
-      max-height: 440px;
-      background: #04293A;
-      border: 1px solid rgba(46, 196, 230, 0.35);
-      border-radius: 10px;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      position:fixed; bottom:96px; right:26px; width:360px; max-width:calc(100vw - 40px);
+      height:500px; background:#04293A; border:1px solid rgba(46,196,230,.35);
+      border-radius:10px; display:none; flex-direction:column; overflow:hidden;
+      box-shadow:0 8px 30px rgba(0,0,0,.4); z-index:1099;
     }
-    #chat-panel.open { display: flex; }
-    .chat-header {
-      background: rgba(46, 196, 230, 0.12);
-      padding: 12px 14px;
-      font-size: 14px;
-      font-weight: 600;
-      border-bottom: 1px solid rgba(46, 196, 230, 0.2);
+    #chat-panel.open { display:flex; }
+    .chat-header { background:rgba(46,196,230,.12); padding:12px 14px; font-size:14px; font-weight:600; border-bottom:1px solid rgba(46,196,230,.2); }
+    .chat-subtitle { font-size:11px; color:#9FD8E8; font-weight:400; margin-top:3px; }
+    #chat-messages { flex:1; overflow-y:auto; padding:12px 14px; display:flex; flex-direction:column; gap:8px; font-size:13px; }
+    .msg { padding:8px 10px; border-radius:8px; max-width:90%; line-height:1.4; white-space:pre-wrap; }
+    .msg.bot { background:rgba(46,196,230,.15); align-self:flex-start; }
+    .msg.user { background:rgba(46,196,230,.35); align-self:flex-end; color:#04293A; }
+    .chat-input-row { display:flex; border-top:1px solid rgba(46,196,230,.2); }
+    .chat-input-row input { flex:1; background:transparent; border:none; color:#EAF6FA; padding:10px 12px; font-size:13px; outline:none; }
+    .chat-input-row button { background:none; border:none; color:#2EC4E6; font-weight:700; padding:0 14px; cursor:pointer; }
+
+    /* Pages / modal panels */
+    .page-overlay {
+      position:fixed; inset:0; background:rgba(2,15,27,.88); backdrop-filter:blur(8px);
+      display:none; z-index:1200; overflow-y:auto; padding:30px 20px;
     }
-    #chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 13px;
+    .page-overlay.open { display:block; }
+    .page-shell { max-width:900px; margin:0 auto; }
+    .page-top {
+      display:flex; align-items:center; justify-content:space-between; gap:15px;
+      margin-bottom:20px;
     }
-    .msg { padding: 8px 10px; border-radius: 8px; max-width: 85%; line-height: 1.4; }
-    .msg.bot { background: rgba(46, 196, 230, 0.15); align-self: flex-start; }
-    .msg.user { background: rgba(46, 196, 230, 0.35); align-self: flex-end; color: #04293A; }
-    .chat-input-row {
-      display: flex;
-      border-top: 1px solid rgba(46, 196, 230, 0.2);
+    .page-top h2 { margin:0; color:#EAF6FA; }
+    .close-btn {
+      border:1px solid rgba(46,196,230,.35); background:rgba(46,196,230,.08);
+      color:#2EC4E6; border-radius:7px; padding:8px 13px; cursor:pointer;
     }
-    .chat-input-row input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: #EAF6FA;
-      padding: 10px 12px;
-      font-size: 13px;
-      outline: none;
+    .profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+    @media(max-width:700px){ .profile-grid{grid-template-columns:1fr;} }
+    .profile-field { background:rgba(10,92,122,.18); border:1px solid rgba(46,196,230,.2); border-radius:9px; padding:14px; }
+    .profile-field label { display:block; color:#9FD8E8; font-size:11px; margin-bottom:6px; text-transform:uppercase; }
+    .profile-field .value { font-size:14px; min-height:20px; }
+    .profile-field input, .profile-field textarea {
+      width:100%; background:rgba(0,0,0,.15); color:#EAF6FA; border:1px solid rgba(46,196,230,.25);
+      border-radius:6px; padding:9px; outline:none;
     }
-    .chat-input-row button {
-      background: none;
-      border: none;
-      color: #2EC4E6;
-      font-weight: 700;
-      padding: 0 14px;
-      cursor: pointer;
+    .profile-field textarea { resize:vertical; min-height:80px; }
+    .profile-actions { margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; }
+    .primary-btn {
+      border:0; background:#2EC4E6; color:#04293A; font-weight:700; border-radius:7px;
+      padding:9px 15px; cursor:pointer;
     }
+    .danger-btn {
+      border:1px solid rgba(230,57,70,.5); background:rgba(230,57,70,.12);
+      color:#FF9999; border-radius:7px; padding:9px 15px; cursor:pointer;
+    }
+    .section-note { color:#9FD8E8; font-size:13px; margin:0 0 15px; line-height:1.5; }
+    .faq-item { border-bottom:1px solid rgba(46,196,230,.15); padding:14px 0; }
+    .faq-q { color:#2EC4E6; font-weight:600; margin-bottom:5px; }
+    .faq-a { color:#B8DDE6; font-size:13px; line-height:1.5; }
+    .support-box { padding:18px; border:1px solid rgba(46,196,230,.25); border-radius:9px; background:rgba(10,92,122,.16); margin-bottom:15px; }
+    .support-box h3 { margin:0 0 7px; font-size:15px; color:#2EC4E6; }
+    .support-box p { margin:0; color:#B8DDE6; font-size:13px; line-height:1.5; }
+
+    /* Add/edit dialog */
+    #edit-dialog {
+      position:fixed; inset:0; background:rgba(2,15,27,.75); display:none; align-items:center;
+      justify-content:center; z-index:1300; padding:20px;
+    }
+    #edit-dialog.open { display:flex; }
+    .dialog {
+      width:100%; max-width:460px; background:#04293A; border:1px solid rgba(46,196,230,.35);
+      border-radius:12px; padding:20px; box-shadow:0 15px 50px rgba(0,0,0,.45);
+    }
+    .dialog h3 { margin:0 0 15px; }
+    .form-row { margin-bottom:12px; }
+    .form-row label { display:block; color:#9FD8E8; font-size:12px; margin-bottom:5px; }
+    .form-row input, .form-row textarea {
+      width:100%; background:rgba(0,0,0,.15); color:#EAF6FA; border:1px solid rgba(46,196,230,.25);
+      border-radius:6px; padding:9px; outline:none;
+    }
+    .form-row textarea { min-height:75px; resize:vertical; }
+    .dialog-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:15px; }
   </style>
 </head>
 <body>
 
-  <!-- Top bar with user and notifications -->
   <div class="topbar">
-    <h1>Welcome, <span class="username" id="username-display">User</span></h1>
+    <h1>Welcome, <span class="username" id="username-display" title="Open profile">User</span></h1>
     <div class="topbar-spacer"></div>
     <div class="topbar-actions">
       <div class="notification-bell" id="notification-bell" title="Notifications">
@@ -331,68 +225,52 @@
     </div>
   </div>
 
-  <!-- Notification panel -->
   <div id="notification-panel">
-    <div class="notif-item">
-      <div class="notif-title">✓ Profile Updated</div>
-      <div class="notif-text">Your account details are current</div>
-    </div>
-    <div class="notif-item">
-      <div class="notif-title">📅 Meeting Reminder</div>
-      <div class="notif-text">Team Standup in 1 hour</div>
-    </div>
-    <div class="notif-item">
-      <div class="notif-title">🎉 Welcome!</div>
-      <div class="notif-text">You've successfully signed in</div>
-    </div>
+    <div class="notif-item"><div class="notif-title">✓ Profile Updated</div><div class="notif-text">Your account details are current</div></div>
+    <div class="notif-item"><div class="notif-title">📅 Meeting Reminder</div><div class="notif-text">Team Standup in 1 hour</div></div>
+    <div class="notif-item"><div class="notif-title">🎉 Welcome!</div><div class="notif-text">You've successfully signed in</div></div>
   </div>
 
-  <!-- Main content -->
   <div class="main-content">
     <div class="grid">
       <div class="main-col">
         <div class="card">
-          <h2>Projects</h2>
-          <div id="projects-list">
-            <div class="list-item"><span class="dot"></span> Website Redesign — in progress</div>
-            <div class="list-item"><span class="dot"></span> Mobile App Beta — review</div>
-            <div class="list-item"><span class="dot"></span> Q4 Marketing Plan — not started</div>
+          <div class="card-heading">
+            <h2>Projects</h2>
+            <button class="icon-btn" id="add-project" title="Add project">+</button>
           </div>
+          <div id="projects-list"></div>
         </div>
 
         <div class="card">
-          <h2>Meeting Schedule</h2>
-          <div id="meetings-list">
-            <div class="list-item"><span class="dot"></span> Mon 9:30 AM — Team Standup</div>
-            <div class="list-item"><span class="dot"></span> Wed 2:00 PM — Client Review</div>
-            <div class="list-item"><span class="dot"></span> Fri 11:00 AM — Sprint Planning</div>
+          <div class="card-heading">
+            <h2>Meeting Schedule</h2>
+            <button class="icon-btn" id="add-meeting" title="Add meeting">+</button>
           </div>
+          <div id="meetings-list"></div>
         </div>
       </div>
 
-      <!-- Right sidebar -->
       <div class="main-col">
         <div class="card account-card">
-          <div class="account-header">
+          <div class="account-header" id="profile-open">
             <div class="profile-icon">👤</div>
             <div>
               <div class="account-name" id="account-name">User Account</div>
               <div class="account-status">Active</div>
             </div>
+            <div class="profile-hint">View profile →</div>
           </div>
           <h2>Account Info</h2>
           <div class="list-item"><span class="dot"></span> User ID: <span id="username-value">—</span></div>
-          <div class="list-item"><span class="dot"></span> Profile complete</div>
-          <div class="list-item"><span class="dot"></span> 3 notifications</div>
+          <div class="list-item"><span class="dot"></span> <span id="profile-complete">Profile complete</span></div>
+          <div class="list-item"><span class="dot"></span> <span id="notification-count">3 notifications</span></div>
           <div class="list-item"><span class="dot"></span> Last login: today</div>
         </div>
 
-        <!-- Calendar widget -->
         <div class="calendar-widget">
-          <div class="calendar-title">November 2026</div>
-          <div class="calendar-grid" id="calendar">
-            <!-- Generated by JavaScript -->
-          </div>
+          <div class="calendar-title" id="calendar-title">Current Month</div>
+          <div class="calendar-grid" id="calendar"></div>
           <div class="holidays-list">
             <div class="holiday-item">🎉 Thanksgiving: Nov 26</div>
             <div class="holiday-item">🎄 Christmas: Dec 25</div>
@@ -403,121 +281,359 @@
   </div>
 
   <div class="bottom-bar">
-    <a href="#">Contacts</a>
-    <a href="#">Help</a>
+    <a id="contacts-link">Contacts</a>
+    <a id="faq-link">FAQs</a>
+    <a id="support-link">Support</a>
   </div>
 
-  <!-- Chat bot -->
   <button id="chat-toggle" title="Ask Byte">💬</button>
   <div id="chat-panel">
-    <div class="chat-header">Byte — Assistant</div>
+    <div class="chat-header">
+      Byte — Assistant
+      <div class="chat-subtitle">I can read this dashboard and help manage projects, meetings and your profile.</div>
+    </div>
     <div id="chat-messages">
-      <div class="msg bot">Hi! I'm Byte. Ask me anything about your account, projects, or meetings.</div>
+      <div class="msg bot">Hi! I'm Byte. I can analyze your dashboard and help you add, edit or remove projects and meetings, or open your profile. Try: "add a project", "edit meeting 1", or "show my profile".</div>
     </div>
     <div class="chat-input-row">
-      <input type="text" id="chat-input" placeholder="Type a question…" />
+      <input type="text" id="chat-input" placeholder="Ask Byte to manage your dashboard…" />
       <button id="chat-send">Send</button>
     </div>
   </div>
 
+  <!-- Profile page -->
+  <div class="page-overlay" id="profile-page">
+    <div class="page-shell">
+      <div class="page-top">
+        <h2 id="profile-page-title">My Profile</h2>
+        <button class="close-btn" data-close="profile-page">✕ Close</button>
+      </div>
+      <p class="section-note">View and edit the information stored for your dashboard profile. Changes are saved in this browser and can also be sent to your backend API.</p>
+      <div class="profile-grid">
+        <div class="profile-field"><label>Full name</label><div id="profile-name-display" class="value"></div></div>
+        <div class="profile-field"><label>User ID / Username</label><div id="profile-username-display" class="value"></div></div>
+        <div class="profile-field"><label>Email</label><input id="profile-email" type="email" placeholder="your@email.com"></div>
+        <div class="profile-field"><label>Phone</label><input id="profile-phone" type="tel" placeholder="Phone number"></div>
+        <div class="profile-field"><label>Role</label><input id="profile-role" type="text" placeholder="Your role"></div>
+        <div class="profile-field"><label>Location</label><input id="profile-location" type="text" placeholder="City / location"></div>
+        <div class="profile-field" style="grid-column:1/-1"><label>About me</label><textarea id="profile-about" placeholder="Tell us something about yourself"></textarea></div>
+      </div>
+      <div class="profile-actions">
+        <button class="primary-btn" id="save-profile">Save Profile</button>
+        <button class="danger-btn" id="reset-profile">Reset editable fields</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQs -->
+  <div class="page-overlay" id="faq-page">
+    <div class="page-shell">
+      <div class="page-top"><h2>Frequently Asked Questions</h2><button class="close-btn" data-close="faq-page">✕ Close</button></div>
+      <div class="card">
+        <div class="faq-item"><div class="faq-q">How do I add a project?</div><div class="faq-a">Click the + button in Projects, enter the project details and save. You can edit or delete it later.</div></div>
+        <div class="faq-item"><div class="faq-q">How do I add or change a meeting?</div><div class="faq-a">Use the + button beside Meeting Schedule. Each meeting also has an edit button and a delete button.</div></div>
+        <div class="faq-item"><div class="faq-q">How do I edit my profile?</div><div class="faq-a">Click your name or profile card to open the full profile page, then edit the available fields.</div></div>
+        <div class="faq-item"><div class="faq-q">What can Byte do?</div><div class="faq-a">Byte can inspect the current dashboard, summarize projects and meetings, open your profile, and perform supported add/edit/delete actions through chat.</div></div>
+        <div class="faq-item"><div class="faq-q">Where are my browser edits stored?</div><div class="faq-a">This version stores dashboard edits in localStorage so the interface remains usable without a database. Your backend can be connected through the API hooks in the JavaScript.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Support -->
+  <div class="page-overlay" id="support-page">
+    <div class="page-shell">
+      <div class="page-top"><h2>Support</h2><button class="close-btn" data-close="support-page">✕ Close</button></div>
+      <div class="support-box"><h3>Account Support</h3><p>For login, signup, password or account-storage issues, contact the administrator of the ByteSoft application.</p></div>
+      <div class="support-box"><h3>Dashboard Support</h3><p>For project, meeting, profile or notification issues, first try refreshing the page. Your local dashboard changes are stored in this browser.</p></div>
+      <div class="support-box"><h3>Technical Support</h3><p>For backend/API problems, check that /api/auth/me and /api/auth/logout are available and that your server is running.</p></div>
+      <div class="support-box"><h3>Contacts</h3><p id="contacts-text">Replace this text with your real support email, phone number or help-desk URL.</p></div>
+    </div>
+  </div>
+
+  <!-- Add/edit dialog -->
+  <div id="edit-dialog">
+    <div class="dialog">
+      <h3 id="dialog-title">Add Project</h3>
+      <div class="form-row"><label>Title</label><input id="dialog-title-input" type="text"></div>
+      <div class="form-row" id="dialog-time-row"><label>Time / Date</label><input id="dialog-time" type="text" placeholder="e.g. Wed 2:00 PM"></div>
+      <div class="form-row"><label>Details / Status</label><textarea id="dialog-details" placeholder="Details, status, notes..."></textarea></div>
+      <div class="dialog-actions">
+        <button class="close-btn" id="dialog-cancel">Cancel</button>
+        <button class="primary-btn" id="dialog-save">Save</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // ---- Auth check ----
+    // ==========================================================
+    // ByteSoft Dashboard Frontend
+    // ==========================================================
+
+    const defaultProjects = [
+      { id: crypto.randomUUID(), title: 'Website Redesign', details: 'in progress' },
+      { id: crypto.randomUUID(), title: 'Mobile App Beta', details: 'review' },
+      { id: crypto.randomUUID(), title: 'Q4 Marketing Plan', details: 'not started' }
+    ];
+    const defaultMeetings = [
+      { id: crypto.randomUUID(), title: 'Team Standup', time: 'Mon 9:30 AM', details: '' },
+      { id: crypto.randomUUID(), title: 'Client Review', time: 'Wed 2:00 PM', details: '' },
+      { id: crypto.randomUUID(), title: 'Sprint Planning', time: 'Fri 11:00 AM', details: '' }
+    ];
+
+    let currentUser = { username: 'User', name: 'User', email: '', phone: '', role: '', location: '', about: '' };
+    let projects = loadJSON('bytesoft_projects', defaultProjects);
+    let meetings = loadJSON('bytesoft_meetings', defaultMeetings);
+    let profile = loadJSON('bytesoft_profile', { email:'', phone:'', role:'', location:'', about:'' });
+    let dialogMode = null;
+    let dialogIndex = -1;
+
+    function loadJSON(key, fallback) {
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+      } catch { return fallback; }
+    }
+    function saveJSON(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+    }
+
+    // ---- Auth check / user name ----
     async function checkAuth() {
-      const res = await fetch('/api/auth/me');
-      const data = await res.json();
-      if (!data.loggedIn) {
-        window.location.href = '/index.html';
-        return;
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+
+        if (!data.loggedIn) {
+          window.location.href = '/index.html';
+          return;
+        }
+
+        currentUser.username = data.username || data.userId || 'User';
+        currentUser.name = data.name || data.fullName || data.username || 'User';
+
+        // If your signup API returns additional profile fields, use them.
+        currentUser.email = data.email || currentUser.email;
+        profile.email = profile.email || currentUser.email || '';
+        renderUser();
+      } catch (error) {
+        // Demo/local mode: keep the dashboard usable if the auth endpoint is unavailable.
+        renderUser();
+        console.warn('Auth endpoint unavailable; running dashboard in local mode.', error);
       }
-      const username = data.username;
-      document.getElementById('username-display').textContent = username;
-      document.getElementById('username-value').textContent = username;
-      document.getElementById('account-name').textContent = username + "'s Account";
+    }
+
+    function renderUser() {
+      const name = currentUser.name || currentUser.username || 'User';
+      document.getElementById('username-display').textContent = name;
+      document.getElementById('username-value').textContent = currentUser.username || name;
+      document.getElementById('account-name').textContent = name + "'s Account";
+      document.getElementById('profile-page-title').textContent = name + "'s Profile";
+      document.getElementById('profile-name-display').textContent = name;
+      document.getElementById('profile-username-display').textContent = currentUser.username || '—';
+      document.getElementById('profile-email').value = profile.email || '';
+      document.getElementById('profile-phone').value = profile.phone || '';
+      document.getElementById('profile-role').value = profile.role || '';
+      document.getElementById('profile-location').value = profile.location || '';
+      document.getElementById('profile-about').value = profile.about || '';
     }
 
     checkAuth();
 
     // ---- Logout ----
     document.getElementById('logout-btn').addEventListener('click', async () => {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
       window.location.href = '/index.html';
     });
 
     // ---- Notifications ----
     const notifBell = document.getElementById('notification-bell');
     const notifPanel = document.getElementById('notification-panel');
-    notifBell.addEventListener('click', () => {
-      notifPanel.classList.toggle('open');
+    notifBell.addEventListener('click', () => notifPanel.classList.toggle('open'));
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.notification-bell') && !e.target.closest('#notification-panel')) notifPanel.classList.remove('open');
     });
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.notification-bell') && !e.target.closest('#notification-panel')) {
-        notifPanel.classList.remove('open');
+
+    // ---- Projects ----
+    function renderProjects() {
+      const el = document.getElementById('projects-list');
+      if (!projects.length) {
+        el.innerHTML = '<div class="empty-state">No projects yet. Click + to add one.</div>';
+        return;
       }
-    });
+      el.innerHTML = projects.map((p, i) => `
+        <div class="list-item">
+          <span class="dot"></span>
+          <div class="item-content"><strong>${esc(p.title)}</strong> — ${esc(p.details || 'no status')}</div>
+          <div class="item-actions">
+            <button class="icon-btn" title="Edit project" onclick="openEdit('project', ${i})">✎</button>
+            <button class="icon-btn" title="Delete project" onclick="deleteItem('project', ${i})">×</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ---- Meetings ----
+    function renderMeetings() {
+      const el = document.getElementById('meetings-list');
+      if (!meetings.length) {
+        el.innerHTML = '<div class="empty-state">No meetings yet. Click + to add one.</div>';
+        return;
+      }
+      el.innerHTML = meetings.map((m, i) => `
+        <div class="list-item">
+          <span class="dot"></span>
+          <div class="item-content"><strong>${esc(m.time || 'No time')}</strong> — ${esc(m.title)}${m.details ? ' — ' + esc(m.details) : ''}</div>
+          <div class="item-actions">
+            <button class="icon-btn" title="Edit meeting" onclick="openEdit('meeting', ${i})">✎</button>
+            <button class="icon-btn" title="Delete meeting" onclick="deleteItem('meeting', ${i})">×</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderDashboard() {
+      renderProjects();
+      renderMeetings();
+      document.getElementById('profile-complete').textContent =
+        (profile.email || profile.phone || profile.role || profile.location || profile.about) ? 'Profile has editable details' : 'Profile complete';
+    }
+
+    // ---- Add / Edit ----
+    function openEdit(type, index = -1) {
+      dialogMode = type;
+      dialogIndex = index;
+      const isProject = type === 'project';
+      const item = index >= 0 ? (isProject ? projects[index] : meetings[index]) : null;
+
+      document.getElementById('dialog-title').textContent =
+        (index >= 0 ? 'Edit ' : 'Add ') + (isProject ? 'Project' : 'Meeting');
+      document.getElementById('dialog-title-input').value = item?.title || '';
+      document.getElementById('dialog-details').value = item?.details || '';
+      document.getElementById('dialog-time-row').style.display = isProject ? 'none' : 'block';
+      document.getElementById('dialog-time').value = item?.time || '';
+      document.getElementById('edit-dialog').classList.add('open');
+      document.getElementById('dialog-title-input').focus();
+    }
+    window.openEdit = openEdit;
+
+    document.getElementById('add-project').onclick = () => openEdit('project');
+    document.getElementById('add-meeting').onclick = () => openEdit('meeting');
+    document.getElementById('dialog-cancel').onclick = () => document.getElementById('edit-dialog').classList.remove('open');
+
+    document.getElementById('dialog-save').onclick = () => {
+      const title = document.getElementById('dialog-title-input').value.trim();
+      const details = document.getElementById('dialog-details').value.trim();
+      if (!title) { alert('Please enter a title.'); return; }
+
+      if (dialogMode === 'project') {
+        const item = { id: dialogIndex >= 0 ? projects[dialogIndex].id : crypto.randomUUID(), title, details };
+        if (dialogIndex >= 0) projects[dialogIndex] = item; else projects.push(item);
+        saveJSON('bytesoft_projects', projects);
+      } else {
+        const time = document.getElementById('dialog-time').value.trim();
+        const item = { id: dialogIndex >= 0 ? meetings[dialogIndex].id : crypto.randomUUID(), title, time, details };
+        if (dialogIndex >= 0) meetings[dialogIndex] = item; else meetings.push(item);
+        saveJSON('bytesoft_meetings', meetings);
+      }
+      document.getElementById('edit-dialog').classList.remove('open');
+      renderDashboard();
+    };
+
+    function deleteItem(type, index) {
+      if (!confirm(`Delete this ${type}?`)) return;
+      if (type === 'project') {
+        projects.splice(index, 1);
+        saveJSON('bytesoft_projects', projects);
+      } else {
+        meetings.splice(index, 1);
+        saveJSON('bytesoft_meetings', meetings);
+      }
+      renderDashboard();
+    }
+    window.deleteItem = deleteItem;
+
+    // ---- Profile page ----
+    function openPage(id) { document.getElementById(id).classList.add('open'); }
+    function closePage(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.getElementById('username-display').onclick = () => { renderUser(); openPage('profile-page'); };
+    document.getElementById('profile-open').onclick = () => { renderUser(); openPage('profile-page'); };
+    document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closePage(btn.dataset.close)));
+
+    document.getElementById('save-profile').onclick = async () => {
+      profile.email = document.getElementById('profile-email').value.trim();
+      profile.phone = document.getElementById('profile-phone').value.trim();
+      profile.role = document.getElementById('profile-role').value.trim();
+      profile.location = document.getElementById('profile-location').value.trim();
+      profile.about = document.getElementById('profile-about').value.trim();
+      saveJSON('bytesoft_profile', profile);
+
+      // Optional backend hook. Your server can implement this endpoint for database persistence.
+      try {
+        await fetch('/api/profile/update', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ username:currentUser.username, name:currentUser.name, ...profile })
+        });
+      } catch {}
+
+      renderUser();
+      renderDashboard();
+      alert('Profile saved.');
+    };
+
+    document.getElementById('reset-profile').onclick = () => {
+      if (!confirm('Reset the editable profile fields?')) return;
+      profile = { email:'', phone:'', role:'', location:'', about:'' };
+      saveJSON('bytesoft_profile', profile);
+      renderUser();
+      renderDashboard();
+    };
+
+    // ---- FAQs / Support / Contacts ----
+    document.getElementById('faq-link').onclick = () => openPage('faq-page');
+    document.getElementById('support-link').onclick = () => openPage('support-page');
+    document.getElementById('contacts-link').onclick = () => openPage('support-page');
 
     // ---- Calendar ----
-    const holidays = [26]; // November 26 (Thanksgiving)
+    const holidays = [26];
     const calendarEl = document.getElementById('calendar');
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    dayNames.forEach(name => {
-      const cell = document.createElement('div');
-      cell.className = 'cal-day-name';
-      cell.textContent = name;
-      calendarEl.appendChild(cell);
-    });
-
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
+    document.getElementById('calendar-title').textContent =
+      now.toLocaleString('en-US', { month:'long', year:'numeric' });
+
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    dayNames.forEach(name => {
+      const cell = document.createElement('div');
+      cell.className = 'cal-day-name'; cell.textContent = name; calendarEl.appendChild(cell);
+    });
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-      const empty = document.createElement('div');
-      empty.className = 'cal-day';
-      empty.textContent = '';
-      calendarEl.appendChild(empty);
+    for (let i=0; i<firstDay; i++) {
+      const empty = document.createElement('div'); empty.className='cal-day'; calendarEl.appendChild(empty);
     }
-
-    for (let day = 1; day <= daysInMonth; day++) {
+    for (let day=1; day<=daysInMonth; day++) {
       const cell = document.createElement('div');
-      cell.className = 'cal-day';
+      cell.className='cal-day';
       if (holidays.includes(day)) cell.classList.add('holiday');
-      cell.textContent = day;
-      calendarEl.appendChild(cell);
+      cell.textContent=day; calendarEl.appendChild(cell);
     }
 
-    // ---- Chat bot ----
-    const faq = [
-      { keywords: ['log out', 'logout', 'sign out'], answer: 'Click the "Log out" button in the top-right corner.' },
-      { keywords: ['new project', 'create project'], answer: 'Project creation coming soon — for now, check the Projects card.' },
-      { keywords: ['reset password', 'forgot password'], answer: 'Contact support to reset your account.' },
-      { keywords: ['meeting', 'schedule'], answer: 'See the "Meeting Schedule" card for upcoming meetings.' },
-      { keywords: ['profile', 'user id', 'account'], answer: 'Your info is in the Account section on the right.' },
-      { keywords: ['contact', 'support', 'help'], answer: 'Use the Contacts or Help links at the bottom.' },
-      { keywords: ['secure', 'security', 'safe'], answer: 'Passwords are hashed, never stored plain. Sessions are secure.' },
-      { keywords: ['notification', 'bell'], answer: 'Click the bell icon to see your latest notifications.' },
-      { keywords: ['byte', 'assistant'], answer: 'I\'m Byte, your ByteSoft assistant. Ask away!' }
-    ];
-
-    function getBotReply(text) {
-      const lower = text.toLowerCase();
-      for (const entry of faq) {
-        if (entry.keywords.some(k => lower.includes(k))) return entry.answer;
-      }
-      return "Not sure about that — try the Help link or rephrase your question!";
-    }
-
+    // ---- Byte dashboard-aware assistant ----
     const chatToggle = document.getElementById('chat-toggle');
     const chatPanel = document.getElementById('chat-panel');
     const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
     const chatSend = document.getElementById('chat-send');
 
-    chatToggle.addEventListener('click', () => {
+    chatToggle.onclick = () => {
       chatPanel.classList.toggle('open');
       if (chatPanel.classList.contains('open')) chatInput.focus();
-    });
+    };
 
     function addMessage(text, sender) {
       const div = document.createElement('div');
@@ -527,18 +643,90 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
+    function dashboardSummary() {
+      const projectText = projects.length
+        ? projects.map((p,i) => `${i+1}. ${p.title} — ${p.details || 'no status'}`).join('\n')
+        : 'No projects';
+      const meetingText = meetings.length
+        ? meetings.map((m,i) => `${i+1}. ${m.time || 'no time'} — ${m.title}${m.details ? ' — '+m.details : ''}`).join('\n')
+        : 'No meetings';
+      return `Projects (${projects.length}):\n${projectText}\n\nMeetings (${meetings.length}):\n${meetingText}`;
+    }
+
+    function findIndexByNumberOrText(list, text) {
+      const num = text.match(/(?:project|meeting)\\s*(?:number\\s*)?(\\d+)/i);
+      if (num) return Number(num[1]) - 1;
+      const lower = text.toLowerCase();
+      return list.findIndex(x => lower.includes(String(x.title).toLowerCase()));
+    }
+
+    function getBotReply(text) {
+      const lower = text.toLowerCase().trim();
+
+      if (lower.includes('show') && (lower.includes('dashboard') || lower.includes('summary') || lower.includes('overview'))) {
+        return dashboardSummary();
+      }
+      if (lower.includes('show') && lower.includes('profile')) {
+        renderUser(); openPage('profile-page');
+        return 'I opened your profile page.';
+      }
+      if (lower.includes('faq')) { openPage('faq-page'); return 'I opened the FAQs page.'; }
+      if (lower.includes('support')) { openPage('support-page'); return 'I opened the Support page.'; }
+
+      if ((lower.includes('add') || lower.includes('create')) && lower.includes('project')) {
+        openEdit('project'); return 'I opened the Add Project form. Enter the details and save.';
+      }
+      if ((lower.includes('add') || lower.includes('create')) && lower.includes('meeting')) {
+        openEdit('meeting'); return 'I opened the Add Meeting form. Enter the details and save.';
+      }
+
+      if ((lower.includes('edit') || lower.includes('change') || lower.includes('update')) && lower.includes('project')) {
+        const i = findIndexByNumberOrText(projects, lower);
+        if (i >= 0) { openEdit('project', i); return `I opened Project ${i+1} for editing.`; }
+        return 'Tell me the project number or project name, for example: "edit project 2".';
+      }
+      if ((lower.includes('edit') || lower.includes('change') || lower.includes('update')) && lower.includes('meeting')) {
+        const i = findIndexByNumberOrText(meetings, lower);
+        if (i >= 0) { openEdit('meeting', i); return `I opened Meeting ${i+1} for editing.`; }
+        return 'Tell me the meeting number or meeting name, for example: "edit meeting 2".';
+      }
+
+      if ((lower.includes('delete') || lower.includes('remove')) && lower.includes('project')) {
+        const i = findIndexByNumberOrText(projects, lower);
+        if (i >= 0) { deleteItem('project', i); return `I removed Project ${i+1}.`; }
+        return 'Tell me the project number or project name, for example: "delete project 2".';
+      }
+      if ((lower.includes('delete') || lower.includes('remove')) && lower.includes('meeting')) {
+        const i = findIndexByNumberOrText(meetings, lower);
+        if (i >= 0) { deleteItem('meeting', i); return `I removed Meeting ${i+1}.`; }
+        return 'Tell me the meeting number or meeting name, for example: "delete meeting 2".';
+      }
+
+      if (lower.includes('notification') || lower.includes('bell')) {
+        notifPanel.classList.add('open');
+        return 'I opened your notifications.';
+      }
+      if (lower.includes('log out') || lower.includes('logout') || lower.includes('sign out')) {
+        return 'Use the Log out button in the top-right corner.';
+      }
+      if (lower.includes('project')) return `You currently have ${projects.length} project(s). Say "show dashboard" for the full list.`;
+      if (lower.includes('meeting') || lower.includes('schedule')) return `You currently have ${meetings.length} meeting(s). Say "show dashboard" for the full list.`;
+      if (lower.includes('secure') || lower.includes('security')) return 'Dashboard security depends on your backend authentication, session handling, authorization and HTTPS configuration.';
+
+      return 'I can analyze this dashboard and help with projects, meetings, profile, FAQs and support. Try "show dashboard", "add a project", "edit meeting 1", or "show my profile".';
+    }
+
     function handleSend() {
       const text = chatInput.value.trim();
       if (!text) return;
       addMessage(text, 'user');
       chatInput.value = '';
-      setTimeout(() => addMessage(getBotReply(text), 'bot'), 300);
+      setTimeout(() => addMessage(getBotReply(text), 'bot'), 180);
     }
+    chatSend.onclick = handleSend;
+    chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
 
-    chatSend.addEventListener('click', handleSend);
-    chatInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleSend();
-    });
+    renderDashboard();
   </script>
 </body>
 </html>
