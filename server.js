@@ -48,6 +48,8 @@ app.get('/api/dashboard-data', requireAuth, (req, res) => {
   res.json({ message: `Welcome back, ${req.session.username}!` });
 });
 
+app.use(require('./chat-routes'));
+
 app.listen(PORT, () => {
   console.log(`ByteSoft server running at http://localhost:${PORT}`);
 });
