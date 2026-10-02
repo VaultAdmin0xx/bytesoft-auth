@@ -124,6 +124,162 @@
       color: #B9F5D0;
     }
     .hidden { display: none !important; }
+  
+
+    /* Professional motion/layout polish — preserves ByteSoft's original colours and all form behaviour. */
+    body {
+      position: relative;
+      isolation: isolate;
+      overflow-x: hidden;
+    }
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: 0;
+      pointer-events: none;
+      border: 2px solid rgba(46, 196, 230, 0.20);
+      border-radius: 46% 54% 62% 38% / 42% 42% 58% 58%;
+      animation: ambient-drift 9s ease-in-out infinite alternate;
+    }
+    body > * {
+      position: relative;
+      z-index: 1;
+    }
+    body::before {
+      width: min(58vw, 620px);
+      height: min(58vw, 620px);
+      top: -26%;
+      left: -13%;
+      background: radial-gradient(circle at 60% 60%, rgba(46,196,230,0.13), transparent 65%);
+    }
+    body::after {
+      width: min(48vw, 500px);
+      height: min(48vw, 500px);
+      right: -12%;
+      bottom: -28%;
+      animation-delay: -7s;
+      background: radial-gradient(circle at 35% 35%, rgba(10,92,122,0.25), transparent 68%);
+    }
+    .brand {
+      animation: brand-enter 700ms cubic-bezier(.2,.75,.25,1) both;
+    }
+    .logo-mark {
+      filter: drop-shadow(0 4px 12px rgba(46, 196, 230, 0.22));
+      transition: transform 220ms ease, filter 220ms ease;
+    }
+    .brand:hover .logo-mark {
+      transform: translateY(-2px) rotate(-3deg);
+      filter: drop-shadow(0 6px 15px rgba(46, 196, 230, 0.32));
+    }
+    .login-container {
+      position: relative;
+      overflow: hidden;
+      width: min(100%, 400px);
+      padding: clamp(28px, 4vw, 38px);
+      border-radius: 16px;
+      border-color: rgba(46, 196, 230, 0.25);
+      background: linear-gradient(145deg, rgba(10, 92, 122, 0.24), rgba(4, 29, 48, 0.52));
+      box-shadow: 0 22px 60px rgba(0, 10, 22, 0.24), inset 0 1px 0 rgba(234, 246, 250, 0.07);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      animation: card-enter 780ms cubic-bezier(.2,.75,.25,1) both;
+      transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+    }
+    .login-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 12%;
+      right: 12%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(46,196,230,0.65), transparent);
+    }
+    .login-container:hover {
+      border-color: rgba(46, 196, 230, 0.36);
+      box-shadow: 0 26px 68px rgba(0, 10, 22, 0.28), inset 0 1px 0 rgba(234, 246, 250, 0.08);
+    }
+    .login-container h2 {
+      font-size: clamp(23px, 3vw, 27px);
+      line-height: 1.25;
+      letter-spacing: -0.025em;
+      margin-bottom: 9px;
+    }
+    .login-container .subtitle {
+      line-height: 1.65;
+      margin-bottom: 27px;
+    }
+    .field { margin-bottom: 18px; }
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+    }
+    input, select {
+      min-height: 44px;
+      border-radius: 9px;
+      transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+    input:hover, select:hover {
+      border-color: rgba(46, 196, 230, 0.48);
+    }
+    input:focus, select:focus {
+      border-color: #2EC4E6;
+      background: rgba(4, 41, 58, 0.82);
+      box-shadow: 0 0 0 3px rgba(46, 196, 230, 0.12);
+    }
+    button.submit-btn {
+      min-height: 45px;
+      margin-top: 8px;
+      border-radius: 9px;
+      letter-spacing: 0.015em;
+      box-shadow: 0 7px 18px rgba(4, 20, 34, 0.2);
+      transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+    }
+    button.submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+      box-shadow: 0 11px 24px rgba(4, 20, 34, 0.28);
+    }
+    button.submit-btn:active:not(:disabled) { transform: translateY(0); }
+    button.submit-btn:focus-visible, .toggle-row a:focus-visible {
+      outline: 2px solid #2EC4E6;
+      outline-offset: 4px;
+    }
+    .toggle-row { line-height: 1.7; margin-top: 21px; }
+    .toggle-row a { transition: opacity 180ms ease, text-shadow 180ms ease; }
+    .toggle-row a:hover { opacity: 0.9; text-shadow: 0 0 12px rgba(46,196,230,0.25); }
+    .message { border-radius: 9px; line-height: 1.5; }
+    @keyframes card-enter {
+      from { opacity: 0; transform: translateY(34px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes brand-enter {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes ambient-drift {
+      from { transform: translate3d(0, 0, 0) rotate(-7deg); }
+      to { transform: translate3d(18px, -12px, 0) rotate(7deg); }
+    }
+    @media (max-width: 520px) {
+      body { padding: 22px 16px; }
+      .brand { top: 16px; right: 16px; gap: 8px; }
+      .logo-mark { width: 38px; height: 38px; }
+      .brand-name { font-size: 16px; }
+      .login-container { margin-top: 46px; padding: 26px 22px; }
+      body::before { width: 90vw; height: 90vw; top: -10%; left: -35%; }
+      body::after { width: 75vw; height: 75vw; right: -30%; bottom: -12%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
   </style>
 </head>
 <body>
