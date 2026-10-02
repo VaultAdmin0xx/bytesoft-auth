@@ -1875,6 +1875,36 @@
     // NORMAL BYTE RESPONSE
     // =====================================================
 
+if (data.action === 'update_project') {
+  const project = projects.find(
+    p => p.title?.toLowerCase() === data.oldTitle?.toLowerCase()
+  );
+
+  if (project) {
+    project.title = data.title;
+    project.details = data.details;
+    saveJSON('bytesoft_projects', projects);
+    renderDashboard();
+  }
+
+  addMessage(data.reply || 'Project updated.', 'bot');
+  return;
+}
+
+if (data.action === 'update_meeting') {
+  const meeting = meetings.find(
+    m => m.title?.toLowerCase() === data.oldTitle?.toLowerCase()
+  );
+
+  if (meeting) {
+    meeting.time = data.time;
+    saveJSON('bytesoft_meetings', meetings);
+    renderDashboard();
+  }
+
+  addMessage(data.reply || 'Meeting rescheduled.', 'bot');
+  return;
+}
     addMessage(
       data.reply ||
         'I could not generate a response.',
