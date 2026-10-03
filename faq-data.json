@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1791051589279,
+    "question": "How do I add a project?",
+    "answer": "Click the + button in the Projects card, enter a title and a status, then press Save. You can edit or delete the project at any time.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589279,
+    "answeredTs": 1791051589279
+  },
+  {
+    "id": 1791051589280,
+    "question": "How do I add or change a meeting?",
+    "answer": "Click the + button beside Meeting Schedule. Every meeting also has an Edit button and a Delete button.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589280,
+    "answeredTs": 1791051589280
+  },
+  {
+    "id": 1791051589281,
+    "question": "How do I apply for leave?",
+    "answer": "Click Apply Leave on the calendar (or just tell Byte \"apply for leave\"). Choose the date, pick a full or half day, and add a reason. If you still have paid leave this month, it is approved right away; otherwise it goes to your manager.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589281,
+    "answeredTs": 1791051589281
+  },
+  {
+    "id": 1791051589282,
+    "question": "How do I edit my profile?",
+    "answer": "Click your name or the profile card at the top right to open your profile page, change the fields you want, and press Save Profile.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589282,
+    "answeredTs": 1791051589282
+  },
+  {
+    "id": 1791051589283,
+    "question": "How do I clock in and out?",
+    "answer": "Use the Clock in button in the Shifts & Attendance card. Press it again when your shift ends to clock out.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589283,
+    "answeredTs": 1791051589283
+  },
+  {
+    "id": 1791051589284,
+    "question": "What can Byte do?",
+    "answer": "Byte can show your projects, meetings, profile and leave balance, add, rename or remove projects and meetings, and open FAQs, Support and the leave form. You can write to Byte in English or Hinglish.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589284,
+    "answeredTs": 1791051589284
+  },
+  {
+    "id": 1791051589285,
+    "question": "Where is my data stored?",
+    "answer": "Your projects, meetings and profile are saved in this browser. FAQs and the public chat are stored on the ByteSoft server.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589285,
+    "answeredTs": 1791051589285
+  },
+  {
+    "id": 1791051589286,
+    "question": "My question is not listed. What should I do?",
+    "answer": "Click the + icon at the top of this page and type your question. It will appear here as soon as the manager answers it.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791051589286,
+    "answeredTs": 1791051589286
+  },
+  {
+    "id": 1791051589287,
+    "question": "How are u and hgow thia woprks?",
+    "answer": "",
+    "status": "pending",
+    "askedBy": "bkartikagar",
+    "answeredBy": null,
+    "ts": 1791051666283,
+    "answeredTs": 0
+  }
+]

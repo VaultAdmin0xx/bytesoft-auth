@@ -13,6 +13,9 @@ bytesoft-auth/
 ├── server.js           # starts the app, sets up sessions, serves front end
 ├── db.js                # simple JSON-file "database" for users
 ├── routes/auth.js       # /register, /login, /logout, /me endpoints
+├── routes/byte-routes.js# Byte assistant (English + Hinglish)
+├── routes/faq-routes.js # FAQs + questions from users (pending until the manager answers)
+├── faq.json             # created automatically the first time the server runs
 ├── public/index.html    # your login/signup page (front end)
 ├── public/dashboard.html# page shown after a successful login
 ├── package.json
@@ -54,6 +57,15 @@ Open `http://localhost:3000` in your browser.
 - Click "Sign up", create an account (username + password, min 8 characters)
 - It'll flip back to the login form — log in with those same credentials
 - On success you're redirected to `/dashboard.html`, which only renders because the server checked your session
+
+## FAQs and the manager
+Users can submit their own question with the **+** button on the FAQs page. It stays **pending** (only the person who asked and the manager can see it) until the manager writes an answer, then it is published for everyone.
+
+Who is the manager? Add this to your `.env` (comma-separated for more than one person):
+```
+MANAGER_USERNAMES=bkartikagar
+```
+If you don't set it, the first account in `users.json` is the manager.
 
 ## How the pieces talk to each other
 1. `public/index.html` has a form. Its JavaScript sends a `fetch()` POST to `/api/auth/login` or `/api/auth/register` with JSON `{ username, password }`.

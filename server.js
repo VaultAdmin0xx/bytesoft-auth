@@ -37,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // All auth endpoints live under /api/auth
 app.use('/api/auth', authRoutes);
 app.use('/api/byte', require('./routes/byte-routes'));
+app.use('/api/faq', require('./routes/faq-routes'));
 
 // Middleware to protect routes that require login
 function requireAuth(req, res, next) {

@@ -389,7 +389,7 @@
         <input type="email" id="email" name="email" autocomplete="email" />
       </div>
       <div class="field hidden" id="name-field">
-        <label for="name">Full Name</label>
+        <label for="name">Full name</label>
         <input type="text" id="name" name="name" autocomplete="name" />
       </div>
       <div class="field">
@@ -400,7 +400,7 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" autocomplete="current-password" required />
       </div>
-      <button type="submit" class="submit-btn" id="submit-btn">Log In</button>
+      <button type="submit" class="submit-btn" id="submit-btn">Log in</button>
     </form>
 
     <div class="toggle-row">
@@ -448,7 +448,7 @@
       if (mode === 'register') {
         formTitle.textContent = 'Create an account';
         formSubtitle.textContent = 'Sign up for ByteSoft';
-        submitBtn.textContent = 'Sign Up';
+        submitBtn.textContent = 'Sign up';
         toggleText.textContent = 'Already have an account?';
         toggleLink.textContent = 'Log in';
         emailField.classList.remove('hidden');
@@ -457,7 +457,7 @@
       } else {
         formTitle.textContent = 'Welcome back';
         formSubtitle.textContent = 'Log in to your ByteSoft account';
-        submitBtn.textContent = 'Log In';
+        submitBtn.textContent = 'Log in';
         toggleText.textContent = "Don't have an account?";
         toggleLink.textContent = 'Sign up';
         emailField.classList.add('hidden');
@@ -517,11 +517,11 @@
           usersDb[username] = { name, email };
           saveUsersDB(usersDb);
 
-          showMessage('Account created! You can log in now.', 'success');
+          showMessage('Account created! You can now log in.', 'success');
           toggleLink.click(); // flip back to login form
         }
       } catch (err) {
-        showMessage('Could not reach the server. Is it running?', 'error');
+        showMessage('Couldn\'t reach the server. Is it running?', 'error');
       } finally {
         submitBtn.disabled = false;
       }

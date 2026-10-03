@@ -380,12 +380,117 @@
       color:#FF9999; border-radius:7px; padding:9px 15px; cursor:pointer;
     }
     .section-note { color:#9FD8E8; font-size:13px; margin:0 0 15px; line-height:1.5; }
-    .faq-item { border-bottom:1px solid rgba(46,196,230,.15); padding:14px 0; }
-    .faq-q { color:#2EC4E6; font-weight:600; margin-bottom:5px; }
-    .faq-a { color:#B8DDE6; font-size:13px; line-height:1.5; }
-    .support-box { padding:18px; border:1px solid rgba(46,196,230,.25); border-radius:9px; background:rgba(10,92,122,.16); margin-bottom:15px; }
-    .support-box h3 { margin:0 0 7px; font-size:15px; color:#2EC4E6; }
-    .support-box p { margin:0; color:#B8DDE6; font-size:13px; line-height:1.5; }
+    /* ---- FAQ ---- */
+    .faq-toolbar { display:flex; gap:10px; align-items:center; margin-bottom:16px; }
+    .faq-search {
+      flex:1; background:rgba(0,0,0,.15); color:#EAF6FA; border:1px solid rgba(46,196,230,.25);
+      border-radius:999px; padding:10px 16px; outline:none; font-size:13px;
+    }
+    .faq-search:focus { border-color:#2EC4E6; }
+    .faq-add-btn {
+      width:40px; height:40px; border-radius:50%; border:0; background:#2EC4E6; color:#04293A;
+      font-size:24px; font-weight:700; line-height:1; cursor:pointer; flex-shrink:0;
+      box-shadow:0 2px 10px rgba(46,196,230,.35); transition:transform .2s, background .2s;
+    }
+    .faq-add-btn:hover { transform:scale(1.08); background:#5BD8F2; }
+    .faq-add-btn.open { transform:rotate(45deg); }
+    .faq-ask-box {
+      display:none; padding:16px; border:1px solid rgba(46,196,230,.3); border-radius:12px;
+      background:rgba(10,92,122,.2); margin-bottom:18px;
+    }
+    .faq-ask-box.open { display:block; }
+    .faq-ask-box label { display:block; color:#9FD8E8; font-size:12px; margin-bottom:6px; }
+    .faq-ask-box textarea {
+      width:100%; min-height:70px; resize:vertical; background:rgba(0,0,0,.15); color:#EAF6FA;
+      border:1px solid rgba(46,196,230,.25); border-radius:8px; padding:10px; outline:none; font:inherit; font-size:13px;
+    }
+    .faq-ask-box textarea:focus { border-color:#2EC4E6; }
+    .faq-ask-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; flex-wrap:wrap; }
+    .faq-ask-row .btns { display:flex; gap:8px; }
+    .faq-count { font-size:11px; color:#7FB6C6; }
+    .faq-msg { margin-top:10px; font-size:12.5px; display:none; }
+    .faq-msg.show { display:block; }
+    .faq-msg.ok { color:#7CE3A6; }
+    .faq-msg.err { color:#FF9999; }
+    .faq-section-title {
+      margin:22px 0 10px; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:#9FD8E8;
+      display:flex; align-items:center; gap:8px;
+    }
+    .faq-pill { background:rgba(46,196,230,.18); color:#2EC4E6; border-radius:999px; padding:2px 9px; font-size:11px; letter-spacing:0; text-transform:none; }
+    details.faq-item {
+      border:1px solid rgba(46,196,230,.18); border-radius:12px; background:rgba(10,92,122,.12);
+      margin-bottom:10px; transition:border-color .2s, background .2s;
+    }
+    details.faq-item[open] { border-color:rgba(46,196,230,.45); background:rgba(10,92,122,.22); }
+    details.faq-item summary {
+      cursor:pointer; list-style:none; padding:14px 16px; color:#EAF6FA; font-weight:600; font-size:14px;
+      display:flex; justify-content:space-between; align-items:center; gap:12px;
+    }
+    details.faq-item summary::-webkit-details-marker { display:none; }
+    details.faq-item summary::after { content:'+'; color:#2EC4E6; font-size:20px; font-weight:400; flex-shrink:0; }
+    details.faq-item[open] summary::after { content:'−'; }
+    .faq-a { color:#B8DDE6; font-size:13.5px; line-height:1.65; padding:0 16px 16px; }
+    .faq-a-meta { margin-top:10px; font-size:11px; color:#7FB6C6; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .faq-link-btn { background:none; border:0; color:#FF9999; cursor:pointer; font-size:11px; padding:0; }
+    .faq-pending { border:1px dashed rgba(46,196,230,.4); border-radius:12px; padding:14px 16px; margin-bottom:10px; background:rgba(46,196,230,.05); }
+    .faq-q-text { color:#EAF6FA; font-weight:600; font-size:14px; }
+    .faq-meta { color:#7FB6C6; font-size:11.5px; margin-top:5px; }
+    .faq-badge { display:inline-block; background:rgba(255,196,0,.15); color:#FFD666; border-radius:999px; padding:2px 9px; font-size:11px; margin-right:6px; }
+    .faq-answer-input {
+      width:100%; min-height:70px; resize:vertical; margin-top:10px; background:rgba(0,0,0,.15); color:#EAF6FA;
+      border:1px solid rgba(46,196,230,.25); border-radius:8px; padding:10px; outline:none; font:inherit; font-size:13px;
+    }
+    .faq-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
+    .faq-empty { color:#7FB6C6; font-size:13px; padding:14px 4px; }
+
+    /* ---- Support ---- */
+    .support-hero {
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+      padding:22px; border-radius:14px; margin-bottom:18px;
+      background:linear-gradient(135deg, rgba(46,196,230,.22), rgba(10,92,122,.35));
+      border:1px solid rgba(46,196,230,.35);
+    }
+    .support-hero h3 { margin:0 0 6px; font-size:19px; color:#EAF6FA; }
+    .support-hero p { margin:0; color:#B8DDE6; font-size:13.5px; line-height:1.5; max-width:460px; }
+    .support-status {
+      display:flex; align-items:center; gap:8px; font-size:12px; color:#B8DDE6;
+      background:rgba(0,0,0,.2); border-radius:999px; padding:7px 13px;
+    }
+    .support-status .dot { width:9px; height:9px; border-radius:50%; background:#8aa; }
+    .support-status.ok .dot { background:#4ADE80; box-shadow:0 0 8px #4ADE80; }
+    .support-status.bad .dot { background:#F87171; box-shadow:0 0 8px #F87171; }
+    .support-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:22px; }
+    @media(max-width:700px){ .support-actions { grid-template-columns:1fr; } }
+    .support-action {
+      text-align:left; border:1px solid rgba(46,196,230,.28); background:rgba(10,92,122,.2); color:#EAF6FA;
+      border-radius:12px; padding:16px; cursor:pointer; display:flex; flex-direction:column; gap:4px;
+      transition:transform .15s, border-color .15s, background .15s; font:inherit;
+    }
+    .support-action:hover { transform:translateY(-2px); border-color:#2EC4E6; background:rgba(46,196,230,.16); }
+    .support-action .si { font-size:22px; margin-bottom:4px; }
+    .support-action b { font-size:14px; }
+    .support-action small { color:#9FD8E8; font-size:12px; line-height:1.4; }
+    .support-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    @media(max-width:900px){ .support-grid { grid-template-columns:1fr; } }
+    .support-box { padding:18px; border:1px solid rgba(46,196,230,.22); border-radius:12px; background:rgba(10,92,122,.16); }
+    .support-box .support-icon {
+      width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+      background:rgba(46,196,230,.15); font-size:19px; margin-bottom:10px;
+    }
+    .support-box h3 { margin:0 0 8px; font-size:15px; color:#2EC4E6; }
+    .support-box ul { margin:0; padding-left:18px; color:#B8DDE6; font-size:13px; line-height:1.6; }
+    .support-box li { margin-bottom:5px; }
+    .support-foot { margin-top:18px; text-align:center; color:#7FB6C6; font-size:12.5px; }
+    .support-foot a { color:#2EC4E6; cursor:pointer; text-decoration:underline; }
+
+    /* ---- Byte suggestion chips ---- */
+    .chat-suggest { display:flex; flex-wrap:wrap; gap:6px; align-self:flex-start; max-width:96%; }
+    .suggest-chip {
+      border:1px solid rgba(46,196,230,.45); background:rgba(46,196,230,.08); color:#9FE3F5;
+      border-radius:14px; padding:5px 11px; font-size:12px; cursor:pointer; font-family:inherit;
+      transition:background .15s, transform .15s;
+    }
+    .suggest-chip:hover { background:rgba(46,196,230,.25); transform:translateY(-1px); }
 
     /* Add/edit dialog */
     #edit-dialog {
@@ -528,9 +633,9 @@
   </div>
 
   <div id="notification-panel">
-    <div class="notif-item"><div class="notif-title">✓ Profile Updated</div><div class="notif-text">Your account details are current</div></div>
-    <div class="notif-item"><div class="notif-title">📅 Meeting Reminder</div><div class="notif-text">Team Standup in 1 hour</div></div>
-    <div class="notif-item"><div class="notif-title">🎉 Welcome!</div><div class="notif-text">You've successfully signed in</div></div>
+    <div class="notif-item"><div class="notif-title">✓ Profile updated</div><div class="notif-text">Your account details are up to date.</div></div>
+    <div class="notif-item"><div class="notif-title">📅 Meeting reminder</div><div class="notif-text">Team Standup starts in 1 hour.</div></div>
+    <div class="notif-item"><div class="notif-title">🎉 Welcome!</div><div class="notif-text">You've signed in successfully.</div></div>
   </div>
 
   <div class="main-content intro">
@@ -556,14 +661,14 @@
 
         <div class="card">
           <div class="card-heading">
-            <h2>Meeting Schedule</h2>
+            <h2>Meeting schedule</h2>
             <button class="icon-btn" id="add-meeting" title="Add meeting">+</button>
           </div>
           <div id="meetings-list"></div>
         </div>
 
         <div class="card" id="news-card">
-          <div class="card-heading"><h2>Company News</h2><div class="news-tabs" id="news-tabs"></div></div>
+          <div class="card-heading"><h2>Company news</h2><div class="news-tabs" id="news-tabs"></div></div>
           <div id="news-list"></div>
           <button type="button" class="small-btn" id="news-more" style="margin-top:10px">Show all</button>
           <div class="news-note" id="news-note"></div>
@@ -571,7 +676,7 @@
 
         <div class="card" id="public-chat-card">
           <div class="card-heading">
-            <h2>Public Chat</h2>
+            <h2>Public chat</h2>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px"><span class="pc-status" id="pc-status">Connecting…</span><span class="pc-reset" id="pc-reset"></span></div>
           </div>
           <div id="public-chat-messages" aria-live="polite"></div>
@@ -584,7 +689,7 @@
 
       <div class="main-col">
         <div class="card" id="attendance-card">
-          <div class="card-heading"><h2>Shifts &amp; Attendance</h2><span class="att-badge" id="att-badge"></span></div>
+          <div class="card-heading"><h2>Shifts &amp; attendance</h2><span class="att-badge" id="att-badge"></span></div>
           <div class="att-status" id="att-status"></div>
           <button class="primary-btn" id="att-btn">Clock in</button>
           <div class="att-week" id="att-week"></div>
@@ -594,7 +699,7 @@
         <div class="calendar-widget">
           <div class="calendar-title-row">
             <div class="calendar-title" id="calendar-title">Current Month</div>
-            <button type="button" class="leave-btn" id="apply-leave-btn" title="Apply for leave / half day">🌴 Apply Leave</button>
+            <button type="button" class="leave-btn" id="apply-leave-btn" title="Apply for leave / half day">🌴 Apply leave</button>
           </div>
           <div class="cal-nav"><button id="cal-prev" title="Previous month">‹</button><span id="cal-month"></span><button id="cal-next" title="Next month">›</button><button id="cal-today">Today</button></div>
           <div class="calendar-grid" id="calendar"></div>
@@ -608,14 +713,13 @@
 
   <div class="footer-zone">
   <div class="bottom-bar">
-    <a id="contacts-link">Contacts</a>
     <a id="faq-link">FAQs</a>
     <a id="support-link">Support</a>
   </div>
 
   <div class="about-card">
     <h2>About ByteSoft</h2>
-    <p>ByteSoft is built around <strong>Byte</strong>, our workspace chatbot. Instead of clicking through screens, just tell Byte what you need — type it, or tap the mic and say it — and Byte reads your dashboard and does it for you.</p>
+    <p>ByteSoft is built around <strong>Byte</strong>, our workspace chatbot. Instead of clicking through screens, just tell Byte what you need. Type it, or tap the mic and say it, and Byte reads your dashboard and does it for you. Byte understands English and Hinglish.</p>
     <div class="about-h">Try asking Byte</div>
     <div class="about-try">
       <button type="button" class="chip" data-say="show dashboard">Show dashboard</button>
@@ -646,10 +750,18 @@
       </div>
     </div>
     <div id="chat-messages">
-      <div class="msg bot">Hi! I'm Byte. I can analyze your dashboard and help you add, edit or remove projects and meetings, open your profile, or apply for leave. Try: "add a project", "edit meeting 1", "apply for leave", or "show my profile". Tap 🎤 to talk to me, drag this header (or my floating icon) to move me, or hit ⛶ to go full screen.</div>
+      <div class="msg bot">Hi! 👋 How's it going?</div>
+      <div class="chat-suggest" id="chat-suggest" aria-label="Suggested questions">
+        <button type="button" class="suggest-chip" data-say="What can you do?">What can you do?</button>
+        <button type="button" class="suggest-chip" data-say="Show my projects">Show my projects</button>
+        <button type="button" class="suggest-chip" data-say="Show my meetings">Show my meetings</button>
+        <button type="button" class="suggest-chip" data-say="What's my leave balance?">My leave balance</button>
+        <button type="button" class="suggest-chip" data-say="Open FAQs">Open FAQs</button>
+        <button type="button" class="suggest-chip" data-say="Mere projects dikhao">Mere projects dikhao</button>
+      </div>
     </div>
     <div class="chat-input-row">
-      <input type="text" id="chat-input" placeholder="Ask Byte to manage your dashboard…" />
+      <input type="text" id="chat-input" placeholder="Type a message to Byte…" />
       <button type="button" id="chat-mic" title="Speak to Byte">🎤</button>
       <button id="chat-send">Send</button>
     </div>
@@ -662,10 +774,10 @@
         <h2 id="profile-page-title">My Profile</h2>
         <button class="close-btn" data-close="profile-page">✕ Close</button>
       </div>
-      <p class="section-note">View and edit the information stored for your dashboard profile. Changes are saved in this browser and can also be sent to your backend API.</p>
+      <p class="section-note">View and edit the information stored for your dashboard profile. Changes are saved in this browser.</p>
       <div class="profile-grid">
         <div class="profile-field"><label>Full name</label><input id="profile-name-input" type="text" placeholder="Your full name"></div>
-        <div class="profile-field"><label>User ID / Username</label><div id="profile-username-display" class="value"></div></div>
+        <div class="profile-field"><label>User ID / username</label><div id="profile-username-display" class="value"></div></div>
         <div class="profile-field"><label>Email</label><input id="profile-email" type="email" placeholder="your@email.com"></div>
         <div class="profile-field"><label>Phone</label><input id="profile-phone" type="tel" placeholder="Phone number"></div>
         <div class="profile-field"><label>Role</label><input id="profile-role" type="text" placeholder="Your role"></div>
@@ -677,7 +789,7 @@
         <div class="profile-field"><label>Notifications</label><div class="value" id="notification-count"></div></div>
       </div>
       <div class="profile-actions">
-        <button class="primary-btn" id="save-profile">Save Profile</button>
+        <button class="primary-btn" id="save-profile">Save profile</button>
         <button class="danger-btn" id="reset-profile">Reset editable fields</button>
       </div>
     </div>
@@ -686,14 +798,25 @@
   <!-- FAQs -->
   <div class="page-overlay" id="faq-page">
     <div class="page-shell">
-      <div class="page-top"><h2>Frequently Asked Questions</h2><button class="close-btn" data-close="faq-page">✕ Close</button></div>
-      <div class="card">
-        <div class="faq-item"><div class="faq-q">How do I add a project?</div><div class="faq-a">Click the + button in Projects, enter the project details and save. You can edit or delete it later.</div></div>
-        <div class="faq-item"><div class="faq-q">How do I add or change a meeting?</div><div class="faq-a">Use the + button beside Meeting Schedule. Each meeting also has an edit button and a delete button.</div></div>
-        <div class="faq-item"><div class="faq-q">How do I edit my profile?</div><div class="faq-a">Click your name or profile card to open the full profile page, then edit the available fields.</div></div>
-        <div class="faq-item"><div class="faq-q">What can Byte do?</div><div class="faq-a">Byte can inspect the current dashboard, summarize projects and meetings, open your profile, and perform supported add/edit/delete actions through chat.</div></div>
-        <div class="faq-item"><div class="faq-q">Where are my browser edits stored?</div><div class="faq-a">This version stores dashboard edits in localStorage so the interface remains usable without a database. Your backend can be connected through the API hooks in the JavaScript.</div></div>
+      <div class="page-top"><h2>Frequently asked questions</h2><button class="close-btn" data-close="faq-page">✕ Close</button></div>
+      <p class="section-note">Quick answers to common questions. Can't find yours? Tap the + button to ask. Your question will wait for the manager to answer it.</p>
+      <div class="faq-toolbar">
+        <input id="faq-search" class="faq-search" type="search" placeholder="Search questions…" autocomplete="off">
+        <button type="button" class="faq-add-btn" id="faq-add-btn" title="Ask a question" aria-label="Ask a question">+</button>
       </div>
+      <div class="faq-ask-box" id="faq-ask-box">
+        <label for="faq-ask-input">Your question</label>
+        <textarea id="faq-ask-input" maxlength="300" placeholder="Type your question here…"></textarea>
+        <div class="faq-ask-row">
+          <span class="faq-count" id="faq-count">0 / 300</span>
+          <div class="btns">
+            <button type="button" class="close-btn" id="faq-ask-cancel">Cancel</button>
+            <button type="button" class="primary-btn" id="faq-ask-send">Submit question</button>
+          </div>
+        </div>
+        <div class="faq-msg" id="faq-msg"></div>
+      </div>
+      <div id="faq-body"></div>
     </div>
   </div>
 
@@ -701,10 +824,51 @@
   <div class="page-overlay" id="support-page">
     <div class="page-shell">
       <div class="page-top"><h2>Support</h2><button class="close-btn" data-close="support-page">✕ Close</button></div>
-      <div class="support-box"><h3>Account Support</h3><p>For login, signup, password or account-storage issues, contact the administrator of the ByteSoft application.</p></div>
-      <div class="support-box"><h3>Dashboard Support</h3><p>For project, meeting, profile or notification issues, first try refreshing the page. Your local dashboard changes are stored in this browser.</p></div>
-      <div class="support-box"><h3>Technical Support</h3><p>For backend/API problems, check that /api/auth/me and /api/auth/logout are available and that your server is running.</p></div>
-      <div class="support-box"><h3>Contacts</h3><p id="contacts-text">Replace this text with your real support email, phone number or help-desk URL.</p></div>
+
+      <div class="support-hero">
+        <div>
+          <h3>How can we help you today?</h3>
+          <p>Get an instant answer from Byte, browse the FAQs, or send a question to the manager.</p>
+        </div>
+        <div class="support-status" id="support-status"><span class="dot"></span><span id="support-status-text">Checking connection…</span></div>
+      </div>
+
+      <div class="support-actions">
+        <button type="button" class="support-action" id="support-ask-byte"><span class="si">💬</span><b>Ask Byte</b><small>Instant answers in English or Hinglish</small></button>
+        <button type="button" class="support-action" id="support-open-faq"><span class="si">❓</span><b>Browse FAQs</b><small>Answers to the most common questions</small></button>
+        <button type="button" class="support-action" id="support-ask-manager"><span class="si">✉️</span><b>Ask the manager</b><small>Submit a question and get an answer</small></button>
+      </div>
+
+      <div class="support-grid">
+        <div class="support-box">
+          <div class="support-icon">🔐</div>
+          <h3>Account and login</h3>
+          <ul>
+            <li>Forgot your password? Passwords can't be recovered, only reset by the administrator.</li>
+            <li>Logged out unexpectedly? Sessions last 2 hours, so just log in again.</li>
+            <li>Username already taken? Choose a different one when you sign up.</li>
+          </ul>
+        </div>
+        <div class="support-box">
+          <div class="support-icon">📋</div>
+          <h3>Dashboard</h3>
+          <ul>
+            <li>Something looks out of date? Refresh the page.</li>
+            <li>Projects, meetings and leave requests are saved in this browser only.</li>
+            <li>Can't see your data on another device? That is expected. Use the same browser.</li>
+          </ul>
+        </div>
+        <div class="support-box">
+          <div class="support-icon">🛠️</div>
+          <h3>Connection problems</h3>
+          <ul>
+            <li>If the status above says the server is unreachable, wait a moment and refresh.</li>
+            <li>Byte and Public Chat need the server to be running.</li>
+            <li>Voice input works best in Chrome, over a secure (https) connection.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="support-foot">Still stuck? <a id="support-foot-link">Ask a question in the FAQs</a> and the manager will answer it.</div>
     </div>
   </div>
 
@@ -714,7 +878,7 @@
       <h3 id="dialog-title">Add Project</h3>
       <div class="form-row"><label>Title</label><input id="dialog-title-input" type="text"></div>
       <div class="form-row" id="dialog-time-row"><label>Time / Date</label><input id="dialog-time" type="text" placeholder="e.g. Wed 2:00 PM"></div>
-      <div class="form-row"><label>Details / Status</label><textarea id="dialog-details" placeholder="Details, status, notes..."></textarea></div>
+      <div class="form-row"><label>Details / Status</label><textarea id="dialog-details" placeholder="Details, status, notes…"></textarea></div>
       <div class="dialog-actions">
         <button class="close-btn" id="dialog-cancel">Cancel</button>
         <button class="primary-btn" id="dialog-save">Save</button>
@@ -725,7 +889,7 @@
   <!-- Apply leave dialog -->
   <div id="leave-dialog">
     <div class="dialog">
-      <h3>Apply for Leave</h3>
+      <h3>Apply for leave</h3>
       <div class="form-row"><label>Date</label><input id="leave-date" type="date"></div>
       <div class="form-row">
         <label>Type</label>
@@ -742,7 +906,7 @@
         </select>
       </div>
       <div class="form-row"><label>Reason</label><textarea id="leave-reason" placeholder="Why are you taking leave?"></textarea></div>
-      <p class="section-note" style="margin:0 0 4px;">If you have enough paid leave left this month it's approved right away; otherwise it's sent to your manager for approval.</p>
+      <p class="section-note" style="margin:0 0 4px;">If you have enough paid leave left this month it is approved right away. Otherwise, it is sent to your manager for approval.</p>
       <div class="dialog-actions">
         <button class="close-btn" id="leave-cancel">Cancel</button>
         <button class="primary-btn" id="leave-submit">Apply</button>
@@ -1125,9 +1289,184 @@
     };
 
     // ---- FAQs / Support / Contacts ----
-    document.getElementById('faq-link').onclick = () => openPage('faq-page');
-    document.getElementById('support-link').onclick = () => openPage('support-page');
-    document.getElementById('contacts-link').onclick = () => openPage('support-page');
+    const faqLink = document.getElementById('faq-link');
+    const faqBody = document.getElementById('faq-body');
+    const faqSearch = document.getElementById('faq-search');
+    const faqAddBtn = document.getElementById('faq-add-btn');
+    const faqAskBox = document.getElementById('faq-ask-box');
+    const faqAskInput = document.getElementById('faq-ask-input');
+    const faqCount = document.getElementById('faq-count');
+    const faqMsg = document.getElementById('faq-msg');
+    let faqData = { items: [], isManager: false, error: '' };
+
+    function faqEsc(value) {
+      return String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+    function faqDate(ts) {
+      try { return new Date(ts).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }); } catch { return ''; }
+    }
+    function faqNotice(text, kind) {
+      faqMsg.textContent = text || '';
+      faqMsg.className = 'faq-msg' + (text ? ' show ' + kind : '');
+    }
+
+    async function faqRequest(url, options) {
+      const res = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options));
+      let data = {};
+      try { data = await res.json(); } catch {}
+      if (!res.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
+      return data;
+    }
+
+    async function loadFaq() {
+      try {
+        const data = await faqRequest('/api/faq', { cache: 'no-store' });
+        faqData = { items: data.items || [], isManager: !!data.isManager, error: '' };
+      } catch (err) {
+        faqData.error = "Couldn't load the FAQs. Please check that the server is running and try again.";
+      }
+      renderFaq();
+      updateFaqBadge();
+    }
+
+    function updateFaqBadge() {
+      const waiting = faqData.isManager ? faqData.items.filter(i => i.status === 'pending').length : 0;
+      faqLink.textContent = waiting ? `FAQs (${waiting} waiting)` : 'FAQs';
+    }
+
+    function renderFaq() {
+      const q = faqSearch.value.trim().toLowerCase();
+      const matches = i => !q || i.question.toLowerCase().includes(q) || (i.answer || '').toLowerCase().includes(q);
+      const answered = faqData.items.filter(i => i.status === 'answered' && matches(i));
+      const pending = faqData.items.filter(i => i.status === 'pending');
+      let html = '';
+
+      if (faqData.error) html += `<div class="faq-empty">${faqEsc(faqData.error)}</div>`;
+
+      if (faqData.isManager && pending.length) {
+        html += `<div class="faq-section-title">Waiting for your answer <span class="faq-pill">${pending.length}</span></div>`;
+        html += pending.map(i => `
+          <div class="faq-pending" data-id="${faqEsc(i.id)}">
+            <div class="faq-q-text">${faqEsc(i.question)}</div>
+            <div class="faq-meta">Asked by ${faqEsc(i.askedBy)} · ${faqDate(i.askedAt)}</div>
+            <textarea class="faq-answer-input" maxlength="1500" placeholder="Write your answer…"></textarea>
+            <div class="faq-actions">
+              <button type="button" class="danger-btn" data-faq-del="${faqEsc(i.id)}">Delete</button>
+              <button type="button" class="primary-btn" data-faq-answer="${faqEsc(i.id)}">Publish answer</button>
+            </div>
+          </div>`).join('');
+      } else if (!faqData.isManager && pending.length) {
+        html += `<div class="faq-section-title">Your questions <span class="faq-pill">${pending.length} pending</span></div>`;
+        html += pending.map(i => `
+          <div class="faq-pending">
+            <div class="faq-q-text">${faqEsc(i.question)}</div>
+            <div class="faq-meta"><span class="faq-badge">⏳ Pending</span>Waiting for the manager to answer · asked ${faqDate(i.askedAt)}</div>
+          </div>`).join('');
+      }
+
+      html += '<div class="faq-section-title">Answered questions</div>';
+      html += answered.length
+        ? answered.map(i => `
+          <details class="faq-item">
+            <summary>${faqEsc(i.question)}</summary>
+            <div class="faq-a">${faqEsc(i.answer).replace(/\n/g, '<br>')}
+              ${(i.askedBy && i.askedBy !== 'ByteSoft') || faqData.isManager ? `<div class="faq-a-meta">
+                <span>${i.askedBy && i.askedBy !== 'ByteSoft' ? 'Asked by ' + faqEsc(i.askedBy) : ''}</span>
+                ${faqData.isManager ? `<button type="button" class="faq-link-btn" data-faq-del="${faqEsc(i.id)}">Delete</button>` : ''}
+              </div>` : ''}
+            </div>
+          </details>`).join('')
+        : `<div class="faq-empty">${q ? 'No questions match your search.' : 'There are no answered questions yet.'}</div>`;
+
+      faqBody.innerHTML = html;
+    }
+
+    faqSearch.addEventListener('input', renderFaq);
+
+    faqBody.addEventListener('click', async e => {
+      const answerBtn = e.target.closest('[data-faq-answer]');
+      const delBtn = e.target.closest('[data-faq-del]');
+      try {
+        if (answerBtn) {
+          const box = answerBtn.closest('.faq-pending').querySelector('.faq-answer-input');
+          if (!box.value.trim()) { box.focus(); return; }
+          answerBtn.disabled = true;
+          await faqRequest(`/api/faq/${encodeURIComponent(answerBtn.dataset.faqAnswer)}/answer`, {
+            method: 'POST', body: JSON.stringify({ answer: box.value })
+          });
+          await loadFaq();
+        } else if (delBtn) {
+          if (!confirm('Delete this question permanently?')) return;
+          await faqRequest(`/api/faq/${encodeURIComponent(delBtn.dataset.faqDel)}`, { method: 'DELETE' });
+          await loadFaq();
+        }
+      } catch (err) {
+        alert(err.message);
+        if (answerBtn) answerBtn.disabled = false;
+      }
+    });
+
+    function toggleFaqAsk(open) {
+      const show = typeof open === 'boolean' ? open : !faqAskBox.classList.contains('open');
+      faqAskBox.classList.toggle('open', show);
+      faqAddBtn.classList.toggle('open', show);
+      if (show) faqAskInput.focus();
+      else faqNotice('');
+    }
+    faqAddBtn.onclick = () => toggleFaqAsk();
+    document.getElementById('faq-ask-cancel').onclick = () => { faqAskInput.value = ''; faqCount.textContent = '0 / 300'; toggleFaqAsk(false); };
+    faqAskInput.addEventListener('input', () => { faqCount.textContent = `${faqAskInput.value.length} / 300`; });
+
+    document.getElementById('faq-ask-send').onclick = async () => {
+      const question = faqAskInput.value.trim();
+      if (question.length < 5) { faqNotice('Please write a full question first.', 'err'); return; }
+      const sendBtn = document.getElementById('faq-ask-send');
+      sendBtn.disabled = true;
+      try {
+        await faqRequest('/api/faq/ask', { method: 'POST', body: JSON.stringify({ question }) });
+        faqAskInput.value = '';
+        faqCount.textContent = '0 / 300';
+        faqNotice('Thank you! Your question was sent. It will appear in the list once the manager answers it.', 'ok');
+        await loadFaq();
+      } catch (err) {
+        faqNotice(err.message, 'err');
+      } finally {
+        sendBtn.disabled = false;
+      }
+    };
+
+    function openFaq(askNow) {
+      openPage('faq-page');
+      closePage('support-page');
+      loadFaq();
+      if (askNow) toggleFaqAsk(true);
+    }
+    faqLink.onclick = () => openFaq(false);
+
+    // ---- Support ----
+    async function checkSupportStatus() {
+      const box = document.getElementById('support-status');
+      const label = document.getElementById('support-status-text');
+      box.className = 'support-status';
+      label.textContent = 'Checking connection…';
+      try {
+        const res = await fetch('/api/auth/me', { cache: 'no-store' });
+        if (!res.ok) throw new Error();
+        box.classList.add('ok');
+        label.textContent = 'Server connected';
+      } catch {
+        box.classList.add('bad');
+        label.textContent = "Can't reach the server";
+      }
+    }
+    document.getElementById('support-link').onclick = () => { openPage('support-page'); checkSupportStatus(); };
+    document.getElementById('support-ask-byte').onclick = () => { closePage('support-page'); chatPanel.classList.add('open'); chatInput.focus(); };
+    document.getElementById('support-open-faq').onclick = () => openFaq(false);
+    document.getElementById('support-ask-manager').onclick = () => openFaq(true);
+    document.getElementById('support-foot-link').onclick = () => openFaq(true);
+
+    // Managers see how many questions are waiting right on the FAQs link
+    loadFaq();
 
     // ---- Calendar ----
     // India public holidays. g = gazetted, o = optional/restricted. State lists vary; edit freely.
@@ -1431,7 +1770,7 @@
     function stopListening() {
       listening = false;
       chatMic.classList.remove('listening');
-      chatInput.placeholder = 'Ask Byte to manage your dashboard…';
+      chatInput.placeholder = 'Type a message to Byte…';
     }
 
     chatMic.onclick = () => {
@@ -1460,9 +1799,10 @@
       }
     };
 
-    function addMessage(text, sender) {
+    function addMessage(text, sender, id) {
       const div = document.createElement('div');
       div.className = 'msg ' + sender;
+      if (id) div.id = id;
       div.textContent = text;
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1548,12 +1888,13 @@
       return 'I can analyze this dashboard and help with projects, meetings, profile, FAQs, support and leave requests. Try "show dashboard", "add a project", "apply for leave", or "show my profile".';
     }
 
-    async function handleSend() {
-  const text = chatInput.value.trim();
+    async function handleSend(preset) {
+  // A suggestion chip passes its own text; otherwise read the input box.
+  const text = (typeof preset === 'string' ? preset : chatInput.value).trim();
   if (!text) return;
 
   addMessage(text, 'user');
-  chatInput.value = '';
+  if (typeof preset !== 'string') chatInput.value = '';
 
   const thinkingId = 'byte-thinking-' + Date.now();
   addMessage('Thinking…', 'bot', thinkingId);
@@ -2014,7 +2355,7 @@ if (data.action === 'update_meeting') {
   }
 }
 
-chatSend.onclick = handleSend;
+chatSend.onclick = () => handleSend();
 
 chatInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
@@ -2023,16 +2364,12 @@ chatInput.addEventListener('keydown', e => {
   }
 });
 
-chatSend.onclick = handleSend;
-
-chatInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    handleSend();
-  }
+// Suggested questions: clicking one sends it as the user's own message
+chatMessages.addEventListener('click', e => {
+  const chip = e.target.closest('.suggest-chip');
+  if (chip) handleSend(chip.dataset.say);
 });
-    chatSend.onclick = handleSend;
-    chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+
 
     // ==========================================================
     // Public chat — one shared room for every ByteSoft account

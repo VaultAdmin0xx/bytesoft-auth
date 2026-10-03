@@ -68,6 +68,75 @@ function normalizeText(value = '') {
     .join(' ');
 }
 
+// =====================================================
+// HINGLISH SUPPORT (Hindi written in English letters + English)
+// Rewrites common Hinglish phrases into the English phrases the
+// rules below already understand. Add more rules here any time.
+// =====================================================
+const NOUNS_WITH_MY = '(projects?|meetings?|profile)';
+const NOUNS_PLAIN = '(dashboard|notifications?|faqs?|support|leave balance|leave requests?)';
+const SHOW_VERBS = '(?:dikhao|dikha do|dikhado|dikha de|dikhana|dikha|batao|bata do|batado|bata de|dekho|dekhna hai|dekhna chahta hu|dekhna chahti hu)';
+const OPEN_VERBS = '(?:kholo|khol do|kholdo|kholiye|kholna hai|open karo|open kardo|open kar do)';
+const DO_SUFFIX = '(?:\\s+(?:karo|kardo|kar do|kijiye|kar de))?';
+
+const HINGLISH_RULES = [
+  [/\b(?:kaise ho|kese ho|kaisa hai|kaisi ho|kya haal hai|kya haal chaal|kya hal hai|how r u)\b/g, 'how are you'],
+  [/\b(?:tum|aap)\s+(?:kya kya|kya)\s+(?:kar sakte ho|kar sakti ho|kar sakte hain|karte ho)\b|\bkya kar sakte ho\b|\bkya kar sakta hai\b/g, 'what can you do'],
+  [/\b(?:tum|aap)\s+kaun\s+ho\b|\btumhara naam kya hai\b|\baapka naam kya hai\b|\btera naam kya hai\b/g, 'who are you'],
+  [/\b(?:shukriya|dhanyavad|dhanyawad|thanku|thank u|thnx)\b/g, 'thank you'],
+  [/\b(?:namaste|namaskar|ram ram|sat sri akal|salaam|salam)\b/g, 'hello'],
+  [/\bmain kaun hu+n?\b|\bmein kaun hu+n?\b/g, 'who am i'],
+  [/\bmer[aei]\s+(naam|name|email|phone|role|location)\s+(?:kya hai|kya h|batao|bata do)\b/g,
+    (m, k) => 'my ' + (k === 'naam' ? 'name' : k)],
+  [new RegExp('\\b(?:mere|meri|mera|apne|apna)?\\s*' + NOUNS_WITH_MY + '\\s+(?:ko\\s+)?' + SHOW_VERBS + '\\b', 'g'),
+    (m, n) => 'show my ' + n],
+  [new RegExp('\\b(?:mere|meri|mera|apne|apna)?\\s*' + NOUNS_PLAIN + '\\s+(?:ko\\s+)?' + SHOW_VERBS + '\\b', 'g'),
+    (m, n) => 'show ' + n],
+  [new RegExp('\\b' + NOUNS_WITH_MY + '\\s+(?:ko\\s+)?' + OPEN_VERBS + '\\b', 'g'), (m, n) => 'open ' + n],
+  [new RegExp('\\b' + NOUNS_PLAIN + '\\s+(?:ko\\s+)?' + OPEN_VERBS + '\\b', 'g'), (m, n) => 'open ' + n],
+  [/\b(?:mere paas|mere|meri)?\s*(?:kitne|kitni|kitna)\s+(projects?|meetings?)\b/g, (m, n) => 'how many ' + n],
+  [/\b(projects?|meetings?)\s+(?:kitne|kitni)\s+(?:hain|hai|he|h)\b/g, (m, n) => 'how many ' + n],
+  [/\b(meetings?)\s+(?:kab|kitne baje)\b/g, 'show my meetings'],
+  [/\b(?:mera|meri|mere)?\s*(?:chh?utt?i|leave)\s+(?:kitni|kitne)\s+(?:bachi|bache|baki|baaki|bacha)\s*(?:hui|hue)?\s*(?:hai|hain|h)?\b/g, 'leave balance'],
+  [/\b(?:chh?utt?i|leave)\s+(?:apply|request)\s*(?:karo|kardo|kar do|karna hai)?\b|\b(?:chh?utt?i|leave)\s+(?:lena hai|leni hai|chahiye|lena chahta hu|lena chahti hu)\b|\bmujhe\s+(?:chh?utt?i|leave)\s+(?:chahiye|leni hai|lena hai)\b/g, 'apply for leave'],
+  [/\b(?:chh?utt?i|leave)\s+(?:ki\s+)?(?:requests?|status)\b/g, 'leave requests'],
+  [/\b(review|in progress|progress|not started)\s+(?:mein|me|m)\s+(?:kaun\s?sa|kaun\s?se|kon\s?sa|kon\s?se|konsa|konse)\s+project\b/g,
+    (m, st) => 'which project is in ' + (st === 'progress' ? 'in progress' : st).replace('in in', 'in')],
+  [new RegExp('\\b(?:naya|nayi|ek naya|ek nayi)\\s+(project|meeting)\\s+(?:add|create|banao|bana do|jodo|jod do)' + DO_SUFFIX + '\\s*(.*)$', 'g'),
+    (m, n, rest) => ('add ' + n + ' ' + rest).trim()],
+  [new RegExp('\\b(.+?)\\s+(?:naam ka|naam se|naam wala|naam ki)\\s+(project|meeting)\\s+(?:add|create|banao|bana do|jodo|jod do)' + DO_SUFFIX + '$', 'g'),
+    (m, title, n) => 'add ' + n + ' ' + title],
+  [new RegExp('\\b(project|meeting)\\s+(.+?)\\s+(?:ko\\s+)?(?:delete|remove|hatao|hata do|hatado|mita do|mitao|cancel)' + DO_SUFFIX + '$', 'g'),
+    (m, n, title) => 'delete ' + n + ' ' + title],
+  [/\b(.+?)\s+(project|meeting)\s+(?:ko\s+)?(?:hatao|hata do|hatado|mita do|mitao|delete karo|remove karo|cancel karo)$/g,
+    (m, title, n) => 'delete ' + n + ' ' + title],
+  [/\bpassword\s+(?:bhul|bhool)\s*(?:gaya|gayi|gya|gyi)?\b/g, 'forgot password'],
+  [/\bsupport\s+(?:se baat|se contact|chahiye|se help)\b|\bsupport team se\b/g, 'open support'],
+  [/\b(?:mujhe\s+)?(?:madad|help)\s+(?:chahiye|karo|kardo|kar do|kijiye)\b|\bmeri\s+(?:madad|help)\s+karo\b/g, 'how can you help'],
+  [/\blog\s?out\s+(?:karo|kardo|kar do)\b|\bbahar nikalo\b/g, 'logout']
+];
+
+// Words that show the user is writing Hinglish (used to reply in Hinglish too).
+const HINGLISH_MARKERS = [
+  'hai', 'hain', 'kya', 'kaise', 'kese', 'karo', 'kardo', 'kar', 'mera', 'meri', 'mere', 'mujhe', 'dikhao', 'batao',
+  'kholo', 'chahiye', 'kitne', 'kitni', 'naya', 'nayi', 'hatao', 'chutti', 'chhutti', 'shukriya', 'dhanyavad',
+  'namaste', 'tum', 'aap', 'aapka', 'tumhara', 'nahi', 'haan', 'kaun', 'kab', 'madad', 'bhul', 'bhool', 'baaki',
+  'bachi', 'wala', 'naam', 'mein', 'liye', 'sakte', 'sakta', 'dikha', 'bata', 'jodo', 'banao'
+];
+
+function isHinglish(rawNormalized) {
+  const words = rawNormalized.split(' ');
+  return words.some(w => HINGLISH_MARKERS.includes(w));
+}
+
+function applyHinglish(text) {
+  let out = text;
+  for (const [pattern, replacement] of HINGLISH_RULES) {
+    out = out.replace(pattern, replacement);
+  }
+  return out.replace(/\s+/g, ' ').trim();
+}
+
 function has(text, phrases) {
   return phrases.some(phrase => text.includes(phrase));
 }
@@ -110,23 +179,37 @@ function meetingTime(item) {
   return String(item.time || item.date || '').trim();
 }
 
-function listProjects(data) {
+function plural(n, one, many) {
+  return n === 1 ? one : many;
+}
+
+// The rules work on lowercase text, so titles come out lowercase.
+// This puts back the capital letters the user typed (or title-cases it).
+function restoreCase(title, original) {
+  const clean = String(title || '').trim();
+  if (!clean) return clean;
+  const idx = String(original).toLowerCase().indexOf(clean.toLowerCase());
+  if (idx >= 0) return String(original).substr(idx, clean.length);
+  return clean.replace(/\b[a-z]/g, c => c.toUpperCase());
+}
+
+function listProjects(data, hi = false) {
   if (!data.projects.length) {
-    return 'You do not have any projects listed yet.';
+    return hi ? 'Abhi aapke paas koi project nahi hai.' : 'You do not have any projects listed yet.';
   }
 
-  return 'Here are your ' + data.projects.length + ' projects:\n' +
+  return (hi ? 'Ye hain aapke ' + data.projects.length + ' projects:\n' : 'Here are your ' + data.projects.length + ' ' + plural(data.projects.length, 'project', 'projects') + ':\n') +
     data.projects.map((p, i) =>
       `${i + 1}. ${projectTitle(p)}${projectStatus(p) ? ' — ' + projectStatus(p) : ''}`
     ).join('\n');
 }
 
-function listMeetings(data) {
+function listMeetings(data, hi = false) {
   if (!data.meetings.length) {
-    return 'You do not have any meetings listed right now.';
+    return hi ? 'Abhi aapke paas koi meeting nahi hai.' : 'You do not have any meetings listed right now.';
   }
 
-  return 'Here are your ' + data.meetings.length + ' meetings:\n' +
+  return (hi ? 'Ye hain aapki ' + data.meetings.length + ' meetings:\n' : 'Here are your ' + data.meetings.length + ' ' + plural(data.meetings.length, 'meeting', 'meetings') + ':\n') +
     data.meetings.map((m, i) =>
       `${i + 1}. ${meetingTitle(m)}${meetingTime(m) ? ' — ' + meetingTime(m) : ''}`
     ).join('\n');
@@ -247,10 +330,13 @@ router.post('/chat', requireAuth, (req, res) => {
     const original = String(req.body?.text || '').trim();
 
     if (!original) {
-      return reply(res, 'Type a message and I will help you.');
+      return reply(res, 'Type a message and I will help you. / Kuch likhiye, main madad karunga.');
     }
 
-    const text = normalizeText(original);
+    const normalized = normalizeText(original);
+    const hi = isHinglish(normalized);          // user wrote Hinglish -> reply in Hinglish
+    const text = applyHinglish(normalized);     // Hinglish phrases rewritten to English rules
+    const t = (en, hin) => (hi ? hin : en);
     const data = getDashboard(req);
 
     // Conversation memory
@@ -339,7 +425,7 @@ router.post('/chat', requireAuth, (req, res) => {
       const sections = [];
 
       if (wantsProjects) {
-        sections.push(listProjects(data));
+        sections.push(listProjects(data, hi));
         memory.lastTopic = 'projects';
 
         if (data.projects.length) {
@@ -348,7 +434,7 @@ router.post('/chat', requireAuth, (req, res) => {
       }
 
       if (wantsMeetings) {
-        sections.push(listMeetings(data));
+        sections.push(listMeetings(data, hi));
         memory.lastTopic = 'meetings';
 
         if (data.meetings.length) {
@@ -361,7 +447,7 @@ router.post('/chat', requireAuth, (req, res) => {
         (wantsGenericCount && wantsProjects && !wantsMeetings)
       ) {
         sections.push(
-          `You have ${data.projects.length} projects in total.`
+          t(`You have ${data.projects.length} projects in total.`, `Aapke paas kul ${data.projects.length} projects hain.`)
         );
       }
 
@@ -370,7 +456,7 @@ router.post('/chat', requireAuth, (req, res) => {
         (wantsGenericCount && wantsMeetings && !wantsProjects)
       ) {
         sections.push(
-          `You have ${data.meetings.length} meetings in total.`
+          t(`You have ${data.meetings.length} meetings in total.`, `Aapke paas kul ${data.meetings.length} meetings hain.`)
         );
       }
 
@@ -408,30 +494,73 @@ router.post('/chat', requireAuth, (req, res) => {
       }
     }
 
-    // GREETINGS
+    // SINGLE STATUS QUESTION (e.g. "which project is in review")
 
-    if (/^(hi|hello|hey|good morning|good afternoon|good evening)$/.test(text)) {
+    if (projectStatusRequested && multiRequestCount === 1) {
+      const requestedStatus = wantsReview ? 'review' : wantsInProgress ? 'in progress' : 'not started';
+      const matches = data.projects.filter(p =>
+        projectStatus(p).toLowerCase().includes(requestedStatus)
+      );
+      memory.lastTopic = 'projects';
+      if (matches.length) memory.lastProject = projectTitle(matches[0]);
+
       return reply(
         res,
-        'Hey! 👋 I’m Byte. I can help with projects, meetings, leave, your profile, notifications, FAQs, and support. What would you like to do?'
+        matches.length
+          ? matches.map(p => `${projectTitle(p)} \u2014 ${projectStatus(p)}`).join('\n')
+          : t(`I couldn\u2019t find any projects with status \"${requestedStatus}\".`, `Status \"${requestedStatus}\" wala koi project nahi mila.`)
+      );
+    }
+
+    // GREETINGS AND SMALL TALK
+    // Byte keeps the first reply short. It only lists what it can do
+    // when the user asks ("what can you do").
+
+    if (/^(hi+|hello+|hey+|hlo|helo|good morning|good afternoon|good evening|good night)( byte)?$/.test(text)) {
+      return reply(
+        res,
+        t('Hi! 👋 How\u2019s it going?', 'Hi! 👋 Kaisa chal raha hai?')
+      );
+    }
+
+    if (/\b(how are you|how is it going|hows it going|how are things|whats up|wassup)\b|^sup$/.test(text)) {
+      return reply(
+        res,
+        t(
+          'I\u2019m doing great, thanks for asking! 😊 How about you?',
+          'Main badhiya hoon, poochne ke liye shukriya! 😊 Aap batao, aap kaise ho?'
+        )
+      );
+    }
+
+    if (/^(i am |im |i m )?(good|fine|great|doing good|doing great|all good|ok|okay|theek|theek hu|theek hoon|badhiya|mast|accha|achha)( thanks| thank you)?$/.test(text)) {
+      return reply(
+        res,
+        t('Glad to hear that! 😊 What can I do for you?', 'Sunkar accha laga! 😊 Main aapki kya madad kar sakta hoon?')
       );
     }
 
     if (has(text, ['thank you', 'thanks', 'you are helpful'])) {
-      return reply(res, 'You’re welcome! 😊 What would you like to do next?');
+      return reply(res, t('You\u2019re welcome! 😊 What would you like to do next?', 'Koi baat nahi! 😊 Ab aap kya karna chahenge?'));
     }
 
     if (has(text, ['who are you', 'what are you', 'your name'])) {
       return reply(
         res,
-        'I’m Byte, your dashboard assistant. I can answer questions using the dashboard data provided to me and help with supported dashboard actions.'
+        t(
+          'I\u2019m Byte, your dashboard assistant. I answer using your dashboard data and can help with supported dashboard actions.',
+          'Main Byte hoon, aapka dashboard assistant. Main aapke dashboard ke data se jawab deta hoon aur kuch dashboard kaam mein madad kar sakta hoon.'
+        )
       );
     }
 
-    if (has(text, ['what can you do', 'show commands', 'how can you help'])) {
+    if (has(text, ['what can you do', 'show commands', 'how can you help', 'what do you do', 'help me'])) {
       return reply(
         res,
-        'You can ask me about projects, meetings, profile information, leave balances and requests. I can also open dashboard sections and help add or remove projects and meetings.'
+        t(
+          'Here\u2019s what I can do:\n\u2022 Show your projects, meetings, profile and leave details\n\u2022 Add, rename or remove projects and meetings\n\u2022 Reschedule meetings and update project status\n\u2022 Open Notifications, FAQs, Support and the leave form\n\nYou can also write to me in Hinglish!',
+          'Main ye sab kar sakta hoon:\n\u2022 Aapke projects, meetings, profile aur leave ki details dikhana\n\u2022 Projects aur meetings add, rename ya remove karna\n\u2022 Meeting reschedule karna aur project ka status badalna\n\u2022 Notifications, FAQs, Support aur leave form kholna\n\nAap mujhse Hinglish mein bhi baat kar sakte ho!'
+        )
       );
     }
 
@@ -484,7 +613,7 @@ router.post('/chat', requireAuth, (req, res) => {
     ) {
       return reply(
         res,
-        `You have ${data.projects.length} projects in your dashboard.`
+        t(`You have ${data.projects.length} projects in your dashboard.`, `Aapke dashboard mein ${data.projects.length} projects hain.`)
       );
     }
 
@@ -500,7 +629,7 @@ router.post('/chat', requireAuth, (req, res) => {
     ) {
       return reply(
         res,
-        `You have ${data.meetings.length} meetings in your dashboard.`
+        t(`You have ${data.meetings.length} meetings in your dashboard.`, `Aapke dashboard mein ${data.meetings.length} meetings hain.`)
       );
     }
 
@@ -537,27 +666,27 @@ router.post('/chat', requireAuth, (req, res) => {
     // NAVIGATION
 
     if (has(text, ['open dashboard', 'go to dashboard', 'show dashboard', 'open home'])) {
-      return reply(res, 'Opening your dashboard.', 'open_dashboard');
+      return reply(res, t('Opening your dashboard.', 'Aapka dashboard khol raha hoon.'), 'open_dashboard');
     }
 
     if (has(text, ['open notification', 'show notification', 'my alerts', 'notifications'])) {
-      return reply(res, 'Opening your notifications.', 'open_notifications');
+      return reply(res, t('Opening your notifications.', 'Aapke notifications khol raha hoon.'), 'open_notifications');
     }
 
     if (has(text, ['open faq', 'show faq', 'faq page', 'frequently asked'])) {
-      return reply(res, 'Opening the FAQs.', 'open_faq');
+      return reply(res, t('Opening the FAQs.', 'FAQs khol raha hoon.'), 'open_faq');
     }
 
     if (has(text, ['open support', 'contact support', 'support page', 'help desk'])) {
-      return reply(res, 'Opening the support section.', 'open_support');
+      return reply(res, t('Opening the Support section.', 'Support section khol raha hoon.'), 'open_support');
     }
 
     if (has(text, ['open profile', 'view profile', 'show profile', 'my profile', 'profile page', 'edit profile'])) {
-      return reply(res, 'Opening your profile.', 'open_profile');
+      return reply(res, t('Opening your profile.', 'Aapki profile khol raha hoon.'), 'open_profile');
     }
 
     if (has(text, ['apply for leave', 'request leave', 'take leave', 'leave application', 'open leave form'])) {
-      return reply(res, 'Opening the leave request form.', 'open_leave_form');
+      return reply(res, t('Opening the leave request form.', 'Leave request form khol raha hoon.'), 'open_leave_form');
     }
 
     // PROJECT QUESTIONS
@@ -580,24 +709,24 @@ router.post('/chat', requireAuth, (req, res) => {
         memory.lastProject = projectTitle(data.projects[0]);
       }
 
-      return reply(res, listProjects(data));
+      return reply(res, listProjects(data, hi));
     }
 
     if (has(text, ['how many projects', 'project count', 'number of projects', 'count projects'])) {
       memory.lastTopic = 'projects';
-      return reply(res, `You currently have ${data.projects.length} projects.`);
+      return reply(res, t(`You currently have ${data.projects.length} projects.`, `Abhi aapke paas ${data.projects.length} projects hain.`));
     }
 
     if (has(text, ['add project', 'create project', 'new project', 'start project'])) {
-      const title = extractTitle(text, ['add', 'create', 'start'], 'project');
+      const title = restoreCase(extractTitle(text, ['add', 'create', 'start'], 'project'), original);
 
       if (!title || ['project', 'a project', 'new project'].includes(title)) {
-        return reply(res, 'What should the project be called? Example: Add project Employee Portal.');
+        return reply(res, t('What should the project be called? Example: Add project Employee Portal.', 'Project ka naam kya rakhna hai? Example: Add project Employee Portal.'));
       }
 
       return reply(
         res,
-        `Adding project "${title}".`,
+        t(`Adding project "${title}".`, `Project "${title}" add kar raha hoon.`),
         'create_project',
         { project: { title, details: 'not started' } }
       );
@@ -607,7 +736,7 @@ router.post('/chat', requireAuth, (req, res) => {
       const title = extractTitle(text, ['delete', 'remove'], 'project');
 
       if (!title || title === 'project') {
-        return reply(res, 'Which project should I remove? Please include its title.');
+        return reply(res, t('Which project should I remove? Please include its title.', 'Kaun sa project hatana hai? Please uska title bhi likhiye.'));
       }
 
       const project = findExact(data.projects, title, projectTitle);
@@ -621,7 +750,7 @@ router.post('/chat', requireAuth, (req, res) => {
 
       return reply(
         res,
-        `Please confirm the removal of "${projectTitle(project)}".`,
+        t(`Please confirm the removal of "${projectTitle(project)}".`, `Please "${projectTitle(project)}" ko hatane ki confirmation dijiye.`),
         'delete_project',
         { title: projectTitle(project) }
       );
@@ -653,7 +782,7 @@ router.post('/chat', requireAuth, (req, res) => {
         return res.json({
           action: 'update_project',
           oldTitle: projectTitle(project),
-          title: rename ? rename[2].trim() : projectTitle(project),
+          title: rename ? restoreCase(rename[2].trim(), original) : projectTitle(project),
           details: status ? status[2].toLowerCase() : projectStatus(project),
           reply: 'Updating your project.'
         });
@@ -683,7 +812,7 @@ router.post('/chat', requireAuth, (req, res) => {
         return res.json({
           action: 'update_meeting',
           oldTitle: meetingTitle(meeting),
-          time: match[2].trim(),
+          time: restoreCase(match[2].trim(), original),
           reply: 'Updating your meeting time.'
         });
       }
@@ -712,24 +841,24 @@ router.post('/chat', requireAuth, (req, res) => {
         memory.lastMeeting = meetingTitle(data.meetings[0]);
       }
 
-      return reply(res, listMeetings(data));
+      return reply(res, listMeetings(data, hi));
     }
 
     if (has(text, ['how many meetings', 'meeting count', 'number of meetings', 'count meetings'])) {
       memory.lastTopic = 'meetings';
-      return reply(res, `You currently have ${data.meetings.length} meetings.`);
+      return reply(res, t(`You currently have ${data.meetings.length} meetings.`, `Abhi aapke paas ${data.meetings.length} meetings hain.`));
     }
 
     if (has(text, ['add meeting', 'create meeting', 'new meeting', 'schedule meeting'])) {
-      const title = extractTitle(text, ['add', 'create', 'schedule'], 'meeting');
+      const title = restoreCase(extractTitle(text, ['add', 'create', 'schedule'], 'meeting'), original);
 
       if (!title || ['meeting', 'a meeting', 'new meeting'].includes(title)) {
-        return reply(res, 'What should the meeting be called? Example: Add meeting Project Review.');
+        return reply(res, t('What should the meeting be called? Example: Add meeting Project Review.', 'Meeting ka naam kya rakhna hai? Example: Add meeting Project Review.'));
       }
 
       return reply(
         res,
-        `Adding meeting "${title}".`,
+        t(`Adding meeting "${title}".`, `Meeting "${title}" add kar raha hoon.`),
         'create_meeting',
         { meeting: { title, time: '', details: '' } }
       );
@@ -739,7 +868,7 @@ router.post('/chat', requireAuth, (req, res) => {
       const title = extractTitle(text, ['delete', 'remove', 'cancel'], 'meeting');
 
       if (!title || title === 'meeting') {
-        return reply(res, 'Which meeting should I remove? Please include its title.');
+        return reply(res, t('Which meeting should I remove? Please include its title.', 'Kaun si meeting hatani hai? Please uska title bhi likhiye.'));
       }
 
       const meeting = findExact(data.meetings, title, meetingTitle);
@@ -753,7 +882,7 @@ router.post('/chat', requireAuth, (req, res) => {
 
       return reply(
         res,
-        `Please confirm the removal of "${meetingTitle(meeting)}".`,
+        t(`Please confirm the removal of "${meetingTitle(meeting)}".`, `Please "${meetingTitle(meeting)}" ko hatane ki confirmation dijiye.`),
         'delete_meeting',
         { title: meetingTitle(meeting) }
       );
@@ -810,7 +939,10 @@ router.post('/chat', requireAuth, (req, res) => {
 
     return reply(
       res,
-      `I didn't quite understand "${original}". You can ask me about projects, meetings, leave, your profile, or dashboard sections. You can also ask a follow-up question about the projects or meetings you just viewed.`
+      t(
+        `I didn’t quite understand \"${original}\". Try asking about your projects, meetings, leave or profile — or say \"what can you do\" to see everything I can help with.`,
+        `Mujhe \"${original}\" samajh nahi aaya. Aap projects, meetings, leave ya profile ke baare mein pooch sakte ho — ya \"tum kya kar sakte ho\" likho.`
+      )
     );
 
   } catch (error) {
