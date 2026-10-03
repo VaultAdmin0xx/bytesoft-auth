@@ -280,6 +280,95 @@
       }
     }
 
+
+    /* ===================================================================
+       ByteSoft login motion layer — additive, professional, and fully
+       disabled for visitors who prefer reduced motion. To remove it,
+       delete this block and the "motionLayer" script at the bottom.
+       =================================================================== */
+    :root { --ease: cubic-bezier(.22,.61,.36,1); }
+    @property --ms-ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+    @keyframes ms-rise   { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+    @keyframes ms-fade   { from { opacity:0; } to { opacity:1; } }
+    @keyframes ms-pop    { from { opacity:0; transform:translateY(6px) scale(.98); } to { opacity:1; transform:none; } }
+    @keyframes ms-float  { 0%,100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+    @keyframes ms-orbit  { to { --ms-ang: 360deg; } }
+    @keyframes ms-spin-r { to { transform: rotate(360deg); } }
+    @keyframes ms-leave  { to { opacity:0; transform:translateY(-14px) scale(.98); } }
+
+    @media (prefers-reduced-motion: no-preference) {
+      /* Live network background (canvas is added by the script) */
+      body > canvas.ms-net {
+        position: fixed; inset: 0; width: 100%; height: 100%;
+        z-index: 0; pointer-events: none;
+        opacity: 0; animation: ms-fade 1.4s ease .2s forwards;
+      }
+
+      /* Logo floats gently (uses `translate`, so the hover tilt still works) */
+      .logo-mark { animation: ms-float 6s ease-in-out infinite; }
+
+      /* Card: slow light sweeping around the border + soft cursor spotlight */
+      .login-container {
+        background:
+          radial-gradient(320px circle at var(--mx, 50%) var(--my, -10%), rgba(46,196,230,.11), transparent 62%),
+          linear-gradient(145deg, rgba(10,92,122,.24), rgba(4,29,48,.52));
+      }
+      .login-container::after {
+        content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+        pointer-events: none; opacity: .9;
+        background: conic-gradient(from var(--ms-ang), transparent 0deg, transparent 240deg, rgba(46,196,230,.85) 325deg, transparent 360deg);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+                mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+                mask-composite: exclude;
+        animation: ms-orbit 7s linear infinite;
+      }
+
+      /* Staggered entrance of the card contents */
+      .login-container > h2        { animation: ms-rise .65s var(--ease) .30s both; }
+      .login-container > .subtitle { animation: ms-rise .65s var(--ease) .38s both; }
+      #auth-form .field            { animation: ms-rise .65s var(--ease) .46s both; }
+      #auth-form .field + .field   { animation-delay: .54s; }
+      #auth-form .field + .field + .field { animation-delay: .62s; }
+      #email-field, #name-field    { animation-delay: .05s !important; animation-duration: .45s; }
+      #name-field                  { animation-delay: .12s !important; }
+      #auth-form .submit-btn       { animation: ms-rise .65s var(--ease) .70s both; }
+      .login-container > .toggle-row { animation: ms-rise .65s var(--ease) .78s both; }
+
+      /* Messages pop in */
+      .message.error, .message.success { animation: ms-pop .35s var(--ease); }
+
+      /* Focus: label lights up */
+      label { transition: color .2s ease; }
+      .field:focus-within label { color: #2EC4E6; }
+
+      /* Button: light sweep on hover, spinner while submitting */
+      button.submit-btn { position: relative; overflow: hidden; }
+      button.submit-btn::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none;
+        background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.28) 50%, transparent 70%);
+        transform: translateX(-120%);
+      }
+      button.submit-btn:hover:not(:disabled)::before { transform: translateX(120%); transition: transform .75s var(--ease); }
+      button.submit-btn:disabled { color: transparent; }
+      button.submit-btn:disabled::after {
+        content: ""; position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px;
+        border-radius: 50%; border: 2px solid rgba(4,41,58,.25); border-top-color: #04293A;
+        animation: ms-spin-r .7s linear infinite;
+      }
+
+      /* Sign up / Log in link underline */
+      .toggle-row a { position: relative; }
+      .toggle-row a::after {
+        content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px;
+        background: currentColor; transform: scaleX(0); transform-origin: left;
+        transition: transform .3s var(--ease);
+      }
+      .toggle-row a:hover::after { transform: scaleX(1); }
+
+      /* Fade-out before redirecting to the dashboard */
+      .login-container.leaving { animation: ms-leave .45s var(--ease) forwards; pointer-events: none; }
+    }
   </style>
 </head>
 <body>
@@ -438,6 +527,93 @@
       }
     });
   </script>
+<script>
+(function motionLayer() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const card = document.querySelector('.login-container');
+  const ease = 'cubic-bezier(.22,.61,.36,1)';
+
+  // 1) Soft spotlight that follows the cursor across the card
+  let raf = 0;
+  card.addEventListener('pointermove', e => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  });
+
+  // 2) Text cross-fades when switching between Log in and Sign up
+  const swap = el => el.animate(
+    [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }],
+    { duration: 320, easing: ease });
+  ['form-title', 'form-subtitle', 'submit-btn', 'toggle-text', 'toggle-link'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) new MutationObserver(() => swap(el)).observe(el, { childList: true, characterData: true, subtree: true });
+  });
+
+  // 3) Shake on error, graceful fade-out on successful login
+  const msg = document.getElementById('message');
+  new MutationObserver(() => {
+    if (msg.classList.contains('error')) {
+      card.animate(
+        [{ translate: '0' }, { translate: '-9px' }, { translate: '8px' }, { translate: '-6px' }, { translate: '4px' }, { translate: '0' }],
+        { duration: 420, easing: 'ease-in-out' });
+    } else if (msg.classList.contains('success') && /redirect/i.test(msg.textContent)) {
+      setTimeout(() => card.classList.add('leaving'), 150);
+    }
+  }).observe(msg, { attributes: true, childList: true, subtree: true, attributeFilter: ['class'] });
+
+  // 4) Subtle interactive network background
+  const cv = document.createElement('canvas');
+  cv.className = 'ms-net'; cv.setAttribute('aria-hidden', 'true');
+  document.body.prepend(cv);
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, pts = [], mx = -999, my = -999, running = false;
+  const spawn = () => ({ x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random() - .5) * .28, vy: (Math.random() - .5) * .28, r: Math.random() * 1.4 + .6 });
+  function size() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const n = Math.round(Math.min(70, Math.max(26, W * H / 22000)));
+    while (pts.length < n) pts.push(spawn());
+    pts.length = n;
+  }
+  function frame() {
+    if (document.hidden) { running = false; return; }
+    ctx.clearRect(0, 0, W, H);
+    const L = 130;
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const dx = p.x - mx, dy = p.y - my, d = Math.hypot(dx, dy) || 1;
+      if (d < 140) { p.x += dx / d * .35; p.y += dy / d * .35; }   // gently drift away from the cursor
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -10) p.x = W + 10; else if (p.x > W + 10) p.x = -10;
+      if (p.y < -10) p.y = H + 10; else if (p.y > H + 10) p.y = -10;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fillStyle = 'rgba(46,196,230,.55)'; ctx.fill();
+      for (let j = i + 1; j < pts.length; j++) {
+        const q = pts[j], dd = Math.hypot(p.x - q.x, p.y - q.y);
+        if (dd < L) {
+          ctx.strokeStyle = 'rgba(46,196,230,' + ((1 - dd / L) * .2).toFixed(3) + ')';
+          ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  const start = () => { if (!running) { running = true; requestAnimationFrame(frame); } };
+  size(); start();
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 150); });
+  addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+  document.addEventListener('pointerleave', () => { mx = my = -999; });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) start(); });
+})();
+</script>
 <script>(function(){var i=document.querySelector('img[alt="ByteSoft logo"]');if(!i)return;var l=document.createElement('link');l.rel='icon';l.type='image/png';l.href=i.src;document.head.appendChild(l);})();</script>
 </body>
 </html>

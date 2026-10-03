@@ -406,6 +406,92 @@
     }
     .form-row textarea { min-height:75px; resize:vertical; }
     .dialog-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:15px; }
+
+    /* ===================================================================
+       ByteSoft motion layer — subtle, professional animation.
+       Everything here is additive and switched off for visitors who
+       prefer reduced motion. To remove it, delete this block and the
+       "motionLayer" script near the bottom of the page.
+       =================================================================== */
+    @media (prefers-reduced-motion: no-preference) {
+      :root { --ease: cubic-bezier(.22,.61,.36,1); }
+      html { scroll-behavior: smooth; }
+
+      @keyframes ms-drop  { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
+      @keyframes ms-pop   { from { opacity:0; transform:translateY(8px) scale(.97); } to { opacity:1; transform:none; } }
+      @keyframes ms-fade  { from { opacity:0; } to { opacity:1; } }
+      @keyframes ms-rise  { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+      @keyframes ms-item  { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:none; } }
+      @keyframes ms-bar   { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+      @keyframes ms-ring  { 0%,86%,100%{transform:rotate(0)} 88%{transform:rotate(14deg)} 90%{transform:rotate(-12deg)} 92%{transform:rotate(8deg)} 94%{transform:rotate(-5deg)} 96%{transform:rotate(2deg)} }
+      @keyframes ms-pulse { 0%{box-shadow:0 0 0 0 rgba(230,57,70,.55)} 70%{box-shadow:0 0 0 8px rgba(230,57,70,0)} 100%{box-shadow:0 0 0 0 rgba(230,57,70,0)} }
+
+      /* Top bar */
+      .topbar { animation: ms-drop .6s var(--ease) both; }
+      .topbar-logo { transition: transform .35s var(--ease); }
+      .topbar-logo:hover { transform: rotate(-6deg) scale(1.06); }
+      .username { transition: text-decoration-color .2s; }
+      .username:hover { text-decoration-color: #2EC4E6; }
+      .account-header { transition: background-color .2s; }
+      .profile-hint { transition: transform .25s var(--ease), color .2s; }
+      .account-header:hover .profile-hint { transform: translateX(4px); color: #9FD8E8; }
+
+      /* Bell: rings gently while there are unread notifications */
+      .notification-bell { transition: scale .2s var(--ease); transform-origin: 50% 8%; }
+      .notification-bell:hover { scale: 1.12; }
+      .notification-bell:not(:has(.notification-badge[style*="none"])) { animation: ms-ring 5s ease-in-out infinite; }
+      .notification-badge { animation: ms-pulse 2.4s ease-out infinite; }
+
+      /* Popups, menus, dialogs and full-page panels */
+      #notification-panel.open { animation: ms-pop .22s var(--ease); transform-origin: top right; }
+      #notification-panel.open .notif-item { animation: ms-item .35s var(--ease) both; }
+      #notification-panel.open .notif-item:nth-child(2) { animation-delay: .05s; }
+      #notification-panel.open .notif-item:nth-child(3) { animation-delay: .10s; }
+      #notification-panel.open .notif-item:nth-child(4) { animation-delay: .15s; }
+      .item-menu.open { animation: ms-pop .16s var(--ease); transform-origin: top right; }
+      #chat-panel.open { animation: ms-pop .25s var(--ease); transform-origin: bottom right; }
+      .page-overlay.open { animation: ms-fade .25s ease; }
+      .page-overlay.open .page-shell { animation: ms-rise .45s var(--ease) both; }
+      #leave-dialog.open, #edit-dialog.open { animation: ms-fade .2s ease; }
+      .dialog { animation: ms-pop .28s var(--ease) both; }
+
+      /* Cards */
+      .card, .about-card { transition: transform .3s var(--ease), border-color .3s, box-shadow .3s, background-color .3s; }
+      .main-col > .card:hover, .about-card:hover {
+        transform: translateY(-2px); border-color: rgba(46,196,230,.5);
+        box-shadow: 0 14px 32px rgba(0,10,22,.35);
+      }
+      .collapsible:not(.collapsed) > :not(.card-heading):not(h2) { animation: ms-fade .3s ease; }
+      .list-item { border-radius: 6px; transition: background-color .2s, transform .2s var(--ease); }
+      .list-item:hover { background: rgba(46,196,230,.05); transform: translateX(2px); }
+      .cal-day { transition: background-color .15s, transform .15s var(--ease); }
+      .cal-day:hover { transform: scale(1.08); }
+
+      /* Buttons and form fields */
+      button { transition: transform .15s var(--ease), background-color .2s, border-color .2s, box-shadow .2s, filter .2s, color .2s; }
+      button:active:not(:disabled) { transform: scale(.97); }
+      .icon-btn:hover { transform: translateY(-1px); }
+      .leave-btn:hover, .primary-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(46,196,230,.25); }
+      input, textarea, select { transition: border-color .2s, box-shadow .2s, background-color .2s; }
+      input:focus, textarea:focus, select:focus { border-color: #2EC4E6; box-shadow: 0 0 0 3px rgba(46,196,230,.14); }
+
+      /* Scroll reveal (classes are added by the motion script) */
+      .js-motion .main-col > * { animation: none; }
+      .js-motion .reveal {
+        opacity: 0; transform: translateY(22px);
+        transition: opacity .65s var(--ease), transform .65s var(--ease);
+        transition-delay: var(--d, 0s);
+      }
+      .js-motion .reveal.in { opacity: 1; transform: none; }
+      .pop-in { animation: ms-pop .45s var(--ease) both; }
+
+      /* Stat tiles: play once on first load instead of on every re-render */
+      .js-motion .stat { animation: none; }
+      .js-motion .stats.first-load .stat { animation: ms-rise .6s var(--ease) both; }
+      .js-motion .stats.first-load .stat:nth-child(2) { animation-delay: .10s; }
+      .js-motion .stats.first-load .stat:nth-child(3) { animation-delay: .20s; }
+      .stats.first-load .bar i { transform-origin: left; animation: ms-bar .9s var(--ease) .35s both; }
+    }
   </style>
 </head>
 <body>
@@ -2241,6 +2327,60 @@ chatInput.addEventListener('keydown', e => {
     cardOf('meetings-list').classList.add('panel-hidden');
     renderDashboard();
   </script>
+<script>
+(function motionLayer() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  document.documentElement.classList.add('js-motion');
+
+  // 1) Cards fade/slide in as they scroll into view (staggered)
+  const targets = Array.from(document.querySelectorAll('.main-col > *, .about-card'))
+    .filter(el => !el.classList.contains('panel-hidden'));
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      io.unobserve(el);
+      el.classList.add('in');
+      // clean up afterwards so normal hover effects take over
+      setTimeout(() => { el.classList.remove('reveal', 'in'); el.style.removeProperty('--d'); }, 1300);
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+  targets.forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--d', (i % 4) * 0.08 + 's');
+    io.observe(el);
+  });
+
+  // 2) Projects / Meetings cards pop in when shown from the stat tiles
+  const popObs = new MutationObserver(muts => muts.forEach(m => {
+    const el = m.target;
+    if ((m.oldValue || '').includes('panel-hidden') && !el.classList.contains('panel-hidden')) {
+      el.classList.remove('pop-in'); void el.offsetWidth; el.classList.add('pop-in');
+      setTimeout(() => el.classList.remove('pop-in'), 700);
+    }
+  }));
+  document.querySelectorAll('.main-col > *').forEach(el =>
+    popObs.observe(el, { attributes: true, attributeOldValue: true, attributeFilter: ['class'] }));
+
+  // 3) Stat tiles: staggered entrance, bar growth and number count-up (first load only)
+  const stats = document.getElementById('stats');
+  if (stats && stats.children.length) {
+    stats.classList.add('first-load');
+    setTimeout(() => stats.classList.remove('first-load'), 2400);
+    stats.querySelectorAll('.stat b').forEach(b => {
+      const m = b.textContent.match(/^(\d+)(.*)$/);
+      if (!m) return;
+      const end = +m[1], rest = m[2], t0 = performance.now() + 250;
+      b.textContent = '0' + rest;
+      (function tick(now) {
+        const p = Math.min(Math.max((now - t0) / 900, 0), 1);
+        b.textContent = Math.round(end * (1 - Math.pow(1 - p, 3))) + rest;
+        if (p < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    });
+  }
+})();
+</script>
 <script>(function(){var i=document.querySelector('img[alt="ByteSoft logo"]');if(!i)return;var l=document.createElement('link');l.rel='icon';l.type='image/png';l.href=i.src;document.head.appendChild(l);})();</script>
 </body>
 </html>
