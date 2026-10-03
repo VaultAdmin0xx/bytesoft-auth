@@ -1,35 +1,5 @@
 [
   {
-    "id": 1791051589279,
-    "question": "How do I add a project?",
-    "answer": "Click the + button in the Projects card, enter a title and a status, then press Save. You can edit or delete the project at any time.",
-    "status": "answered",
-    "askedBy": null,
-    "answeredBy": "ByteSoft",
-    "ts": 1791051589279,
-    "answeredTs": 1791051589279
-  },
-  {
-    "id": 1791051589280,
-    "question": "How do I add or change a meeting?",
-    "answer": "Click the + button beside Meeting Schedule. Every meeting also has an Edit button and a Delete button.",
-    "status": "answered",
-    "askedBy": null,
-    "answeredBy": "ByteSoft",
-    "ts": 1791051589280,
-    "answeredTs": 1791051589280
-  },
-  {
-    "id": 1791051589281,
-    "question": "How do I apply for leave?",
-    "answer": "Click Apply Leave on the calendar (or just tell Byte \"apply for leave\"). Choose the date, pick a full or half day, and add a reason. If you still have paid leave this month, it is approved right away; otherwise it goes to your manager.",
-    "status": "answered",
-    "askedBy": null,
-    "answeredBy": "ByteSoft",
-    "ts": 1791051589281,
-    "answeredTs": 1791051589281
-  },
-  {
     "id": 1791051589282,
     "question": "How do I edit my profile?",
     "answer": "Click your name or the profile card at the top right to open your profile page, change the fields you want, and press Save Profile.",
@@ -38,16 +8,6 @@
     "answeredBy": "ByteSoft",
     "ts": 1791051589282,
     "answeredTs": 1791051589282
-  },
-  {
-    "id": 1791051589283,
-    "question": "How do I clock in and out?",
-    "answer": "Use the Clock in button in the Shifts & Attendance card. Press it again when your shift ends to clock out.",
-    "status": "answered",
-    "askedBy": null,
-    "answeredBy": "ByteSoft",
-    "ts": 1791051589283,
-    "answeredTs": 1791051589283
   },
   {
     "id": 1791051589284,
@@ -80,16 +40,6 @@
     "answeredTs": 1791051589286
   },
   {
-    "id": 1791051589287,
-    "question": "How are u and hgow thia woprks?",
-    "answer": "",
-    "status": "pending",
-    "askedBy": "bkartikagar",
-    "answeredBy": null,
-    "ts": 1791051666283,
-    "answeredTs": 0
-  },
-  {
     "id": 1791053643101,
     "question": "How do I check my leave balance?",
     "answer": "Ask Byte “show my leave balance” or check the leave balance shown in the dashboard.",
@@ -98,16 +48,6 @@
     "answeredBy": "ByteSoft",
     "ts": 1791053643101,
     "answeredTs": 1791053643101
-  },
-  {
-    "id": 1791053643102,
-    "question": "How do I open the FAQ or Support section?",
-    "answer": "Use the FAQ or Support navigation item, or ask Byte to open FAQs or Support.",
-    "status": "answered",
-    "askedBy": null,
-    "answeredBy": "ByteSoft",
-    "ts": 1791053643102,
-    "answeredTs": 1791053643102
   },
   {
     "id": 1791053643103,

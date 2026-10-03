@@ -140,9 +140,24 @@
       margin-top:10px; padding:8px 9px; border-radius:6px; font-size:11.5px; font-weight:600;
       background:rgba(46,196,230,.1); border:1px solid rgba(46,196,230,.25); color:#9FD8E8;
     }
+    .leave-summary-row { display:flex; gap:8px; margin-top:8px; }
+    .leave-summary-card { flex:1; min-width:0; padding:9px; border-radius:7px; background:rgba(255,255,255,.035); border:1px solid rgba(46,196,230,.18); }
+    .leave-summary-label { display:block; color:#9FD8E8; font-size:10px; margin-bottom:4px; }
+    .leave-summary-value { display:block; font-size:16px; font-weight:700; color:#fff; }
+    .history-toggle { margin-top:10px; width:100%; padding:8px 10px; border:1px solid rgba(46,196,230,.35); border-radius:7px; color:#9FD8E8; background:rgba(46,196,230,.08); cursor:pointer; text-align:left; font-size:11.5px; font-weight:700; }
+    .history-toggle:hover { background:rgba(46,196,230,.15); }
+    .holiday-history-panel { display:none; margin-top:8px; padding:10px; border-radius:7px; border:1px solid rgba(46,196,230,.22); background:rgba(0,0,0,.12); }
+    .holiday-history-panel.open { display:block; }
+    .history-heading { font-size:12px; font-weight:700; color:#9FD8E8; margin-bottom:8px; }
+    .history-list { max-height:220px; overflow:auto; }
+    .history-item { padding:8px 0; border-bottom:1px solid rgba(46,196,230,.12); }
+    .history-item:last-child { border-bottom:0; }
+    .history-item-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .history-date { font-weight:700; color:#fff; }
+    .history-meta { margin-top:3px; color:#9CB8C2; font-size:10.5px; line-height:1.45; overflow-wrap:anywhere; }
+    .history-empty { color:#9CB8C2; font-size:11px; padding:8px 0; }
     .holidays-list { margin-top:8px; padding-top:8px; border-top:1px solid rgba(46,196,230,.15); font-size:11px; }
     .holiday-item { padding:2px 0; color:#FF9999; }
-    .leave-requests-list { margin-top:8px; padding-top:8px; border-top:1px solid rgba(46,196,230,.15); font-size:11px; }
     .leave-request-item { padding:4px 0; display:flex; justify-content:space-between; gap:6px; }
     .leave-status { font-weight:700; white-space:nowrap; }
     .leave-status.approved { color:#7CE8A4; }
@@ -704,8 +719,16 @@
           <div class="cal-nav"><button id="cal-prev" title="Previous month">‹</button><span id="cal-month"></span><button id="cal-next" title="Next month">›</button><button id="cal-today">Today</button></div>
           <div class="calendar-grid" id="calendar"></div>
           <div class="leave-balance" id="leave-balance">Paid leaves remaining this month: —</div>
+          <div class="leave-summary-row">
+            <div class="leave-summary-card"><span class="leave-summary-label">TOTAL LEAVE TAKEN</span><span class="leave-summary-value" id="total-leave-taken">0 days</span></div>
+            <div class="leave-summary-card"><span class="leave-summary-label">PENDING REQUESTS</span><span class="leave-summary-value" id="pending-leave-count">0</span></div>
+          </div>
+          <button type="button" class="history-toggle" id="holiday-history-toggle" aria-expanded="false">＋ Holiday History</button>
+          <section class="holiday-history-panel" id="holiday-history-panel" aria-label="Holiday History" hidden>
+            <div class="history-heading">Holiday History</div>
+            <div class="history-list" id="holiday-history-list"></div>
+          </section>
           <div class="holidays-list" id="holidays-list"></div>
-          <div class="leave-requests-list" id="leave-requests-list"></div>
         </div>
       </div>
     </div>
@@ -1555,16 +1578,40 @@
       if (document.getElementById('stats').children.length) renderStats();
     }
 
-    function renderLeaveRequests() {
-      const el = document.getElementById('leave-requests-list');
-      if (!leaveRequests.length) { el.innerHTML = ''; return; }
-      el.innerHTML = leaveRequests.slice(0, 4).map(req => `
-        <div class="leave-request-item">
-          <span>${esc(req.date)} — ${esc(formatLeaveType(req))}</span>
-          <span class="leave-status ${req.status}">${req.status === 'approved' ? '✓ Approved' : '⏳ Pending'}</span>
-        </div>
-      `).join('');
+    function leaveDayValue(req) { return req.type === 'half' ? 0.5 : 1; }
+    function renderLeaveHistory() {
+      const approved = leaveRequests.filter(req => req.status === 'approved');
+      const pending = leaveRequests.filter(req => req.status === 'pending');
+      const total = approved.reduce((sum, req) => sum + leaveDayValue(req), 0);
+      document.getElementById('total-leave-taken').textContent = `${Number(total.toFixed(1))} ${total === 1 ? 'day' : 'days'}`;
+      document.getElementById('pending-leave-count').textContent = String(pending.length);
+      const list = document.getElementById('holiday-history-list');
+      const history = [...leaveRequests].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+      if (!history.length) {
+        list.innerHTML = '<div class="history-empty">No leave history yet. Your leave requests will appear here.</div>';
+        return;
+      }
+      list.innerHTML = history.map(req => `
+        <div class="history-item">
+          <div class="history-item-top"><span class="history-date">${esc(req.date || 'Date not set')}</span><span class="leave-status ${req.status === 'approved' ? 'approved' : 'pending'}">${req.status === 'approved' ? '✓ Approved' : req.status === 'rejected' ? '✕ Rejected' : '⏳ Pending'}</span></div>
+          <div class="history-meta">${esc(formatLeaveType(req))}${req.reason ? ' · ' + esc(req.reason) : ''}</div>
+        </div>`).join('');
     }
+
+    // Keep leave details inside the expandable Holiday History panel only.
+    function renderLeaveRequests() {
+      renderLeaveHistory();
+    }
+
+    const historyToggle = document.getElementById('holiday-history-toggle');
+    const historyPanel = document.getElementById('holiday-history-panel');
+    historyToggle.addEventListener('click', () => {
+      const isOpen = historyToggle.getAttribute('aria-expanded') === 'true';
+      historyToggle.setAttribute('aria-expanded', String(!isOpen));
+      historyToggle.textContent = `${isOpen ? '＋' : '−'} Holiday History`;
+      historyPanel.hidden = isOpen;
+      historyPanel.classList.toggle('open', !isOpen);
+    });
 
     renderLeaveBalance();
     renderLeaveRequests();

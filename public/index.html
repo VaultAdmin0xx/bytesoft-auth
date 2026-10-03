@@ -369,6 +369,18 @@
       /* Fade-out before redirecting to the dashboard */
       .login-container.leaving { animation: ms-leave .45s var(--ease) forwards; pointer-events: none; }
     }
+
+    .recovery-link { display:block; margin:14px 0 0 auto; width:max-content; color:var(--accent, #6c63ff); cursor:pointer; font-size:13px; text-decoration:none; }
+    .recovery-link:hover { text-decoration:underline; }
+    .field select, .field input { box-sizing:border-box; }
+    .recovery-panel { display:none; margin-top:18px; padding:20px; border:1px solid rgba(120,120,140,.2); border-radius:16px; background:rgba(255,255,255,.04); }
+    .recovery-panel.open { display:block; animation: recovery-in .25s ease both; }
+    .recovery-panel h3 { margin:0 0 8px; }
+    .recovery-panel p { font-size:13px; line-height:1.5; opacity:.78; }
+    .recovery-panel .field { margin-top:13px; }
+    .recovery-actions { display:flex; gap:10px; align-items:center; margin-top:16px; }
+    .recovery-actions button { cursor:pointer; }
+    @keyframes recovery-in { from {opacity:0; transform:translateY(6px)} to {opacity:1; transform:translateY(0)} }
   </style>
 </head>
 <body>
@@ -392,6 +404,22 @@
         <label for="name">Full name</label>
         <input type="text" id="name" name="name" autocomplete="name" />
       </div>
+      <div class="field hidden" id="security-question-field">
+        <label for="security-question">Password recovery question</label>
+        <select id="security-question" name="securityQuestion">
+          <option value="">Choose a question</option>
+          <option>What was the name of your first school?</option>
+          <option>What city were you born in?</option>
+          <option>What was the name of your first pet?</option>
+          <option>What is the first name of your oldest cousin?</option>
+          <option>What was your childhood nickname?</option>
+        </select>
+      </div>
+      <div class="field hidden" id="security-answer-field">
+        <label for="security-answer">Your answer</label>
+        <input type="text" id="security-answer" name="securityAnswer" autocomplete="off" />
+        <small>Remember your answer exactly. It is stored securely as a hash.</small>
+      </div>
       <div class="field">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" autocomplete="username" required />
@@ -402,6 +430,24 @@
       </div>
       <button type="submit" class="submit-btn" id="submit-btn">Log in</button>
     </form>
+    <a class="recovery-link" id="forgot-password-link" href="#">Forgot password?</a>
+    <section class="recovery-panel" id="recovery-panel" aria-label="Password recovery">
+      <h3>Reset your password</h3>
+      <p>Enter your username, answer the security question you selected during sign-up, and choose a new password.</p>
+      <div class="field">
+        <label for="recovery-username">Username</label>
+        <input id="recovery-username" type="text" autocomplete="username" />
+      </div>
+      <button type="button" class="submit-btn" id="get-security-question-btn">Continue</button>
+      <div id="recovery-question-step" hidden>
+        <div class="field"><label for="recovery-question">Your security question</label><input id="recovery-question" type="text" readonly /></div>
+        <div class="field"><label for="recovery-answer">Your answer</label><input id="recovery-answer" type="text" autocomplete="off" /></div>
+        <div class="field"><label for="recovery-new-password">New password</label><input id="recovery-new-password" type="password" autocomplete="new-password" minlength="8" /></div>
+        <button type="button" class="submit-btn" id="reset-password-btn">Reset password</button>
+      </div>
+      <div class="recovery-actions"><button type="button" id="cancel-recovery-btn">Cancel</button></div>
+      <div class="message" id="recovery-message" role="status" aria-live="polite"></div>
+    </section>
 
     <div class="toggle-row">
       <span id="toggle-text">Don't have an account?</span>
@@ -420,6 +466,15 @@
     const emailField = document.getElementById('email-field');
     const nameField = document.getElementById('name-field');
     const nameInput = document.getElementById('name');
+    const securityQuestionField = document.getElementById('security-question-field');
+    const securityAnswerField = document.getElementById('security-answer-field');
+    const securityQuestionInput = document.getElementById('security-question');
+    const securityAnswerInput = document.getElementById('security-answer');
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    const recoveryPanel = document.getElementById('recovery-panel');
+    const recoveryMessage = document.getElementById('recovery-message');
+    const recoveryQuestionStep = document.getElementById('recovery-question-step');
+    let recoveryUsername = '';
 
     let mode = 'login'; // or 'register'
 
@@ -454,6 +509,11 @@
         emailField.classList.remove('hidden');
         nameField.classList.remove('hidden');
         nameInput.required = true;
+        securityQuestionField.classList.remove('hidden');
+        securityAnswerField.classList.remove('hidden');
+        securityQuestionInput.required = true;
+        securityAnswerInput.required = true;
+        forgotPasswordLink.style.display = 'none';
       } else {
         formTitle.textContent = 'Welcome back';
         formSubtitle.textContent = 'Log in to your ByteSoft account';
@@ -464,6 +524,13 @@
         nameField.classList.add('hidden');
         nameInput.required = false;
         nameInput.value = '';
+        securityQuestionField.classList.add('hidden');
+        securityAnswerField.classList.add('hidden');
+        securityQuestionInput.required = false;
+        securityAnswerInput.required = false;
+        securityQuestionInput.value = '';
+        securityAnswerInput.value = '';
+        forgotPasswordLink.style.display = 'block';
       }
     });
 
@@ -480,7 +547,7 @@
       const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
       const body = mode === 'login'
         ? { username, password }
-        : { name, username, password, email };
+        : { name, username, password, email, securityQuestion: securityQuestionInput.value, securityAnswer: securityAnswerInput.value };
 
       try {
         const res = await fetch(endpoint, {
@@ -525,6 +592,56 @@
       } finally {
         submitBtn.disabled = false;
       }
+    });
+
+    function recoveryNotice(text, type = 'error') {
+      recoveryMessage.textContent = text;
+      recoveryMessage.className = 'message ' + type;
+    }
+    forgotPasswordLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      recoveryPanel.classList.add('open');
+      recoveryMessage.textContent = ''; recoveryMessage.className = 'message';
+      recoveryQuestionStep.hidden = true; recoveryUsername = '';
+      document.getElementById('recovery-username').focus();
+    });
+    document.getElementById('cancel-recovery-btn').addEventListener('click', () => {
+      recoveryPanel.classList.remove('open'); recoveryQuestionStep.hidden = true;
+      recoveryMessage.textContent = '';
+    });
+    document.getElementById('get-security-question-btn').addEventListener('click', async () => {
+      const username = document.getElementById('recovery-username').value.trim();
+      if (!username) return recoveryNotice('Enter your username first.');
+      const button = document.getElementById('get-security-question-btn'); button.disabled = true;
+      try {
+        const response = await fetch('/api/auth/forgot-password/question', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username}) });
+        const data = await response.json();
+        if (!response.ok) return recoveryNotice(data.error || 'Could not load your recovery question.');
+        recoveryUsername = username;
+        document.getElementById('recovery-question').value = data.securityQuestion;
+        recoveryQuestionStep.hidden = false;
+        recoveryNotice('Answer your question to continue.', 'success');
+      } catch { recoveryNotice('Could not reach the server. Please try again.'); }
+      finally { button.disabled = false; }
+    });
+    document.getElementById('reset-password-btn').addEventListener('click', async () => {
+      const securityAnswer = document.getElementById('recovery-answer').value;
+      const newPassword = document.getElementById('recovery-new-password').value;
+      if (!recoveryUsername) return recoveryNotice('Please enter your username and continue first.');
+      if (!securityAnswer.trim() || !newPassword) return recoveryNotice('Enter your answer and new password.');
+      if (newPassword.length < 8) return recoveryNotice('New password must be at least 8 characters.');
+      const button = document.getElementById('reset-password-btn'); button.disabled = true;
+      try {
+        const response = await fetch('/api/auth/forgot-password/reset', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:recoveryUsername, securityAnswer, newPassword}) });
+        const data = await response.json();
+        if (!response.ok) return recoveryNotice(data.error || 'Password reset failed.');
+        recoveryNotice(data.message || 'Password reset. You can now log in.', 'success');
+        document.getElementById('password').value = '';
+        document.getElementById('recovery-answer').value = '';
+        document.getElementById('recovery-new-password').value = '';
+        setTimeout(() => { recoveryPanel.classList.remove('open'); recoveryQuestionStep.hidden = true; }, 1800);
+      } catch { recoveryNotice('Could not reach the server. Please try again.'); }
+      finally { button.disabled = false; }
     });
   </script>
 <script>

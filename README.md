@@ -1,86 +1,24 @@
-# ByteSoft — Login Backend Setup
+# ByteSoft password recovery update
 
-## What this is
-A small Node.js/Express server that adds real login to your front end:
-- Passwords are hashed with bcrypt (never stored in plain text)
-- Sessions via cookies, so the server knows who's logged in
-- A protected `/dashboard.html` page that only loads if you're authenticated
-- Users stored in `users.json` (swap for a real database later — see note at the bottom)
+## What's added
+- Sign-up now asks the user to choose a recovery question and enter an answer.
+- The answer is normalized (trimmed and lowercased) and stored as a bcrypt hash; it is never stored as readable text.
+- The login page has a **Forgot password?** flow: enter username, load the selected question, answer it, and set a new password.
+- Password reset is handled server-side and new passwords are bcrypt-hashed. Passwords must be at least 8 characters.
+- Logged-in password change endpoint is also available at `POST /api/auth/change-password` (requires current password).
 
-## File overview
-```
-bytesoft-auth/
-├── server.js           # starts the app, sets up sessions, serves front end
-├── db.js                # simple JSON-file "database" for users
-├── routes/auth.js       # /register, /login, /logout, /me endpoints
-├── routes/byte-routes.js# Byte assistant (English + Hinglish)
-├── routes/faq-routes.js # FAQs + questions from users (pending until the manager answers)
-├── faq.json             # created automatically the first time the server runs
-├── public/index.html    # your login/signup page (front end)
-├── public/dashboard.html# page shown after a successful login
-├── package.json
-└── .env.example
-```
+## Run
+1. Install Node.js.
+2. Run `npm install` in this folder.
+3. Set a strong `SESSION_SECRET` environment variable for deployment.
+4. Run `npm start` and open `http://localhost:3000`.
 
-## Step 1 — Install Node.js
-If you don't have it: download from https://nodejs.org (LTS version). Check it worked:
-```bash
-node -v
-npm -v
-```
+## Important notes
+- This demo uses a JSON file as its user database. For production, use a database, rate-limit recovery attempts, and consider email-based recovery or MFA. Security questions are weaker than modern recovery methods because answers may be guessable.
+- For this requested demo reset, the included `users.json` is intentionally empty. Existing accounts/passwords in the previous user store are removed; everyone must register again and choose a recovery question. Back up your old user data first if you might need it later.
 
-## Step 2 — Install dependencies
-Open a terminal in the `bytesoft-auth` folder and run:
-```bash
-npm install
-```
-This downloads Express, bcrypt, sessions, etc. based on `package.json`.
-
-## Step 3 — Set your session secret
-Copy the example env file and edit it:
-```bash
-cp .env.example .env
-```
-Open `.env` and replace `SESSION_SECRET` with a long random string (this is what signs your session cookies — keep it private and never commit it to git).
-
-## Step 4 — Run the server
-```bash
-npm start
-```
-You should see:
-```
-ByteSoft server running at http://localhost:3000
-```
-
-## Step 5 — Try it out
-Open `http://localhost:3000` in your browser.
-- Click "Sign up", create an account (username + password, min 8 characters)
-- It'll flip back to the login form — log in with those same credentials
-- On success you're redirected to `/dashboard.html`, which only renders because the server checked your session
-
-## FAQs and the manager
-Users can submit their own question with the **+** button on the FAQs page. It stays **pending** (only the person who asked and the manager can see it) until the manager writes an answer, then it is published for everyone.
-
-Who is the manager? Add this to your `.env` (comma-separated for more than one person):
-```
-MANAGER_USERNAMES=bkartikagar
-```
-If you don't set it, the first account in `users.json` is the manager.
-
-## How the pieces talk to each other
-1. `public/index.html` has a form. Its JavaScript sends a `fetch()` POST to `/api/auth/login` or `/api/auth/register` with JSON `{ username, password }`.
-2. `routes/auth.js` receives that request:
-   - **Register**: checks the username isn't taken, hashes the password with bcrypt, saves the new user to `users.json`.
-   - **Login**: looks up the user, compares the submitted password against the stored hash with `bcrypt.compare`, and if it matches, stores `userId` in `req.session`.
-3. Express automatically sets a cookie in the browser tied to that session.
-4. On later requests (like loading `/dashboard.html`), the browser sends that cookie back automatically, so `server.js`'s `requireAuth` middleware can check `req.session.userId` and decide whether to let the request through.
-5. Logging out destroys the session server-side and clears the cookie.
-
-## Security notes worth knowing
-- Passwords are **hashed**, not encrypted — there's no way to "recover" a password, only reset it.
-- Sessions currently use Express's default in-memory store, which is fine for local development but **resets whenever you restart the server** and doesn't scale across multiple server processes. For production, use a persistent store like `connect-redis` or `connect-pg-simple`.
-- `users.json` is a flat file for learning purposes. For anything real, swap `db.js` for a proper database (see below) — the rest of the app doesn't need to change since `routes/auth.js` only calls `findUserByUsername` and `createUser`.
-- Always run this behind HTTPS in production, and set `cookie.secure = true` in `server.js` once you do, so cookies only travel over HTTPS.
-
-## Swapping in a real database later
-Replace the contents of `db.js` with calls to your database of choice (Postgres, MySQL, MongoDB, etc.), keeping the same three exported function names (`findUserByUsername`, `createUser`, and whatever else you add). Nothing in `routes/auth.js` or `server.js` needs to change.
+## Calendar updates
+- Added a **Total Leave Taken** summary (approved leave only; half-days count as 0.5 day).
+- Added a pending-request count and an expandable **Holiday History** panel showing dates, full/half-day type, reason, and status.
+- Existing account data has been reset for this updated demo: `users.json` starts as an empty array. Users need to register again and set a security question/answer.
+- Leave history remains browser-local (`localStorage`) in this demo and is not synced across devices or accounts.
