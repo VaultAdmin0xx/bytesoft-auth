@@ -98,7 +98,7 @@ const HINGLISH_RULES = [
   [/\b(projects?|meetings?)\s+(?:kitne|kitni)\s+(?:hain|hai|he|h)\b/g, (m, n) => 'how many ' + n],
   [/\b(meetings?)\s+(?:kab|kitne baje)\b/g, 'show my meetings'],
   [/\b(?:mera|meri|mere)?\s*(?:chh?utt?i|leave)\s+(?:kitni|kitne)\s+(?:bachi|bache|baki|baaki|bacha)\s*(?:hui|hue)?\s*(?:hai|hain|h)?\b/g, 'leave balance'],
-  [/\b(?:chh?utt?i|leave)\s+(?:apply|request)\s*(?:karo|kardo|kar do|karna hai)?\b|\b(?:chh?utt?i|leave)\s+(?:lena hai|leni hai|chahiye|lena chahta hu|lena chahti hu)\b|\bmujhe\s+(?:chh?utt?i|leave)\s+(?:chahiye|leni hai|lena hai)\b/g, 'apply for leave'],
+  [/\b(?:chh?utt?i|leave)\s+(?:apply|request)\s*(?:karo|kardo|kar do|karna hai)?\b|\b(?:chh?utt?i|leave)\s+(?:lena hai|leni hai|chahiye|lena chahta hu|lena chahti hu)\b|\bmujhe\s+(?:chh?utt?i|leave)\s+(?:chahiye|leni hai|lena hai)\b|\b(?:meri|mujhe)\s+(?:chh?utt?i|leave)\s+(?:lagao|laga do|apply kar do|apply karo|book karo)\b|\b(?:chh?utt?i|leave)\s+(?:lagao|laga do|book karo)\b/g, 'apply for leave'],
   [/\b(?:chh?utt?i|leave)\s+(?:ki\s+)?(?:requests?|status)\b/g, 'leave requests'],
   [/\b(review|in progress|progress|not started)\s+(?:mein|me|m)\s+(?:kaun\s?sa|kaun\s?se|kon\s?sa|kon\s?se|konsa|konse)\s+project\b/g,
     (m, st) => 'which project is in ' + (st === 'progress' ? 'in progress' : st).replace('in in', 'in')],
@@ -110,6 +110,12 @@ const HINGLISH_RULES = [
     (m, n, title) => 'delete ' + n + ' ' + title],
   [/\b(.+?)\s+(project|meeting)\s+(?:ko\s+)?(?:hatao|hata do|hatado|mita do|mitao|delete karo|remove karo|cancel karo)$/g,
     (m, title, n) => 'delete ' + n + ' ' + title],
+  [/\b(?:projects?|project)\s+(?:dikhao|dikha do|dikhado|batao|list karo|show karo)\b/g, 'show my projects'],
+  [/\b(?:meetings?|meeting)\s+(?:dikhao|dikha do|dikhado|batao|list karo|show karo)\b/g, 'show my meetings'],
+  [/\b(?:naya|nayi)?\s*(?:project|meeting)\s+(?:add|create|banao|bana do|jodo|jod do)\b/g, (m, n) => 'add ' + (m.includes('meeting') ? 'meeting' : 'project')],
+  [/\b(?:project|meeting)\s+(.+?)\s+(?:delete karo|remove karo|hatao|hata do|mita do)\b/g, (m, title, n) => 'delete ' + (m.includes('meeting') ? 'meeting ' : 'project ') + title],
+  [/\b(?:faq|faqs)\s+(?:kholo|khol do|open karo)\b/g, 'open faq'],
+  [/\b(?:support)\s+(?:kholo|khol do|open karo)\b/g, 'open support'],
   [/\bpassword\s+(?:bhul|bhool)\s*(?:gaya|gayi|gya|gyi)?\b/g, 'forgot password'],
   [/\bsupport\s+(?:se baat|se contact|chahiye|se help)\b|\bsupport team se\b/g, 'open support'],
   [/\b(?:mujhe\s+)?(?:madad|help)\s+(?:chahiye|karo|kardo|kar do|kijiye)\b|\bmeri\s+(?:madad|help)\s+karo\b/g, 'how can you help'],
@@ -335,7 +341,15 @@ router.post('/chat', requireAuth, (req, res) => {
 
     const normalized = normalizeText(original);
     const hi = isHinglish(normalized);          // user wrote Hinglish -> reply in Hinglish
-    const text = applyHinglish(normalized);     // Hinglish phrases rewritten to English rules
+    let text = applyHinglish(normalized);     // Hinglish phrases rewritten to English rules
+    // Catch common conversational Hinglish requests that vary in word order.
+    if (/\b(chh?utt?i|leave)\b/.test(normalized) && /\b(lagao|laga do|apply|request|leni|lena|chahiye|book)\b/.test(normalized)) {
+      text = 'apply for leave';
+    } else if (/\b(projects?|project)\b/.test(normalized) && /\b(dikhao|dikha|dikhado|batao|list karo|show karo)\b/.test(normalized)) {
+      text = 'show my projects';
+    } else if (/\b(meetings?|meeting)\b/.test(normalized) && /\b(dikhao|dikha|dikhado|batao|list karo|show karo)\b/.test(normalized)) {
+      text = 'show my meetings';
+    }
     const t = (en, hin) => (hi ? hin : en);
     const data = getDashboard(req);
 

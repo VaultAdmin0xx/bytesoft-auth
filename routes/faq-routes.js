@@ -44,7 +44,17 @@ const STARTER_FAQS = [
   ['Where is my data stored?',
    'Your projects, meetings and profile are saved in this browser. FAQs and the public chat are stored on the ByteSoft server.'],
   ['My question is not listed. What should I do?',
-   'Click the + icon at the top of this page and type your question. It will appear here as soon as the manager answers it.']
+   'Click the + icon at the top of this page and type your question. It will appear here as soon as the manager answers it.'],
+  ['How do I check my leave balance?',
+   'Ask Byte “show my leave balance” or check the leave balance shown in the dashboard.'],
+  ['How do I open the FAQ or Support section?',
+   'Use the FAQ or Support navigation item, or ask Byte to open FAQs or Support.'],
+  ['Can I use Byte in Hinglish?',
+   'Yes. Try simple commands such as “projects dikhao”, “meeting add karo”, or “chhutti apply karo”.'],
+  ['Can I apply for more than one day of leave?',
+   'For now, submit one date per leave request. You can choose a full day or a half day.'],
+  ['How do I delete a project or meeting?',
+   'Use the item’s menu or ask Byte to delete a project or meeting by its name or number.']
 ];
 
 function seed() {

@@ -88,5 +88,55 @@
     "answeredBy": null,
     "ts": 1791051666283,
     "answeredTs": 0
+  },
+  {
+    "id": 1791053643101,
+    "question": "How do I check my leave balance?",
+    "answer": "Ask Byte “show my leave balance” or check the leave balance shown in the dashboard.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791053643101,
+    "answeredTs": 1791053643101
+  },
+  {
+    "id": 1791053643102,
+    "question": "How do I open the FAQ or Support section?",
+    "answer": "Use the FAQ or Support navigation item, or ask Byte to open FAQs or Support.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791053643102,
+    "answeredTs": 1791053643102
+  },
+  {
+    "id": 1791053643103,
+    "question": "Can I use Byte in Hinglish?",
+    "answer": "Yes. Try simple commands such as “projects dikhao”, “meeting add karo”, or “chhutti apply karo”.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791053643103,
+    "answeredTs": 1791053643103
+  },
+  {
+    "id": 1791053643104,
+    "question": "Can I apply for more than one day of leave?",
+    "answer": "For now, submit one date per leave request. You can choose a full day or a half day.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791053643104,
+    "answeredTs": 1791053643104
+  },
+  {
+    "id": 1791053643105,
+    "question": "How do I delete a project or meeting?",
+    "answer": "Use the item’s menu or ask Byte to delete a project or meeting by its name or number.",
+    "status": "answered",
+    "askedBy": null,
+    "answeredBy": "ByteSoft",
+    "ts": 1791053643105,
+    "answeredTs": 1791053643105
   }
 ]
