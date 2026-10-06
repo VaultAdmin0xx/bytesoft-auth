@@ -347,7 +347,7 @@ router.post('/chat', requireAuth, (req, res) => {
       return reply(res, 'Type a message and I will help you. / Kuch likhiye, main madad karunga.');
     }
 
-    const normalized = normalizeText(original);
+    const normalized = hinglish.fixSpelling(normalizeText(original));
     const hi = isHinglish(normalized) || hinglish.looksHinglish(normalized);          // user wrote Hinglish -> reply in Hinglish
     let text = applyHinglish(normalized);     // Hinglish phrases rewritten to English rules
     // Catch common conversational Hinglish requests that vary in word order.

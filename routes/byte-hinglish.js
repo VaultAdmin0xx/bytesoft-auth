@@ -64,6 +64,25 @@ const HINGLISH_WORDS = new Set((
   'pareshan thak bore sunao mausam barish subah shaam raat dopahar kitna baje samay tarikh din'
 ).split(' '));
 
+// Common texting short-forms -> normal Hinglish spelling (add more here any time)
+const SHORT_FORMS = {
+  nhi: 'nahi', nhih: 'nahi', nahin: 'nahi', nahii: 'nahi', nai: 'nahi',
+  skte: 'sakte', skta: 'sakta', skti: 'sakti', sakt: 'sakte',
+  kr: 'kar', krna: 'karna', krdo: 'kardo', kro: 'karo', krde: 'karde', krdena: 'kardena',
+  hn: 'haan', hna: 'haan', h: 'hai', hy: 'hai', hae: 'hai', he: 'hai',
+  btao: 'batao', bta: 'bata', btana: 'batana', dkhao: 'dikhao', dikhaw: 'dikhao', dikaao: 'dikhao',
+  kb: 'kab', ky: 'kya', kia: 'kya', kyaa: 'kya', kese: 'kaise', kesa: 'kaisa',
+  mjhe: 'mujhe', mjhko: 'mujhko', mje: 'mujhe', mre: 'mere', mri: 'meri', mra: 'mera',
+  tmhara: 'tumhara', tmhe: 'tumhe', tm: 'tum', lve: 'leave', lvs: 'leaves', acha: 'accha'
+};
+// Only fix words when the sentence already looks like Hinglish, so English like "he" / "h" is left alone.
+function fixSpelling(n) {
+  const words = String(n).split(' ');
+  const hinglishish = words.some(w => HINGLISH_WORDS.has(w) || (SHORT_FORMS[w] && !['he', 'h', 'kr'].includes(w)));
+  if (!hinglishish) return n;
+  return words.map(w => SHORT_FORMS[w] || w).join(' ');
+}
+
 function looksHinglish(n) {
   return String(n).split(' ').some(w => HINGLISH_WORDS.has(w));
 }
@@ -327,6 +346,9 @@ const SMALL_TALK = [
   [/\b(?:tum|aap)\s+(?:bahut\s+|kaafi\s+|bohot\s+)?(?:accha|achha|acha|smart|best|great|awesome|mast|helpful)\b|\bwell done\b|\bshabash\b|\bgood job\b|\bsahi hai\b/, hi => hi
     ? pick(['Shukriya! 😊 Aap bhi kamaal ho.', 'Dhanyavad! 🙌 Aur kuch madad chahiye?']) : pick(['Thank you! 😊', 'Thanks! 🙌 Anything else I can help with?'])],
   [/^(?:nice|awesome|great|mast|badhiya|zabardast|shandar|wah|waah|superb|cool)(?: byte| bhai| yaar)?$/, hi => hi ? 'Shukriya! 😊 Aur kuch karna hai?' : 'Thanks! 😊 Anything else?'],
+  [/\b(?:tum|tumse|aap|aapse)\s+(?:kuch\s+)?(?:nahi|nahi ho)\s+(?:kar sakte|kar sakta|kar pate|kar paoge|hoga|ho payega|ho paega)\b|\bnahi (?:hota|hoga) tumse\b/, hi => hi
+    ? 'Aisa mat bolo 😅 Main abhi seekh raha hoon! Batao kya karna tha — main poori koshish karunga. Ya "tum kya kar sakte ho" likh kar dekho.'
+    : 'Don\'t say that 😅 I\'m still learning! Tell me what you wanted and I\'ll try my best, or say "what can you do".'],
   [/\b(?:bekar|bekaar|faltu|bakwas|useless|stupid|dumb|kuch nahi aata|samajh nahi aata)\b/, hi => hi
     ? 'Sorry! 🙏 Main seekh raha hoon. Seedha likho, jaise "meri leaves kitni bachi hain" ya "projects dikhao" — main poori koshish karunga.'
     : 'Sorry about that! 🙏 I\'m still learning. Try asking plainly, like "show my projects" or "leave balance".'],
@@ -379,4 +401,4 @@ function logUnknown(original) {
   } catch { /* never break the chat because of logging */ }
 }
 
-module.exports = { looksHinglish, action, answerAbout, rewrite, smallTalk, clarify, smartFallback, logUnknown };
+module.exports = { fixSpelling, looksHinglish, action, answerAbout, rewrite, smallTalk, clarify, smartFallback, logUnknown };
