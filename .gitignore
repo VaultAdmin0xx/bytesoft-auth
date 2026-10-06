@@ -1,3 +1,5 @@
 node_modules/
 .env
 users.json
+user-data.json
+chat-messages.json

@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/auth', authRoutes);
 app.use('/api/byte', require('./routes/byte-routes'));
 app.use('/api/faq', require('./routes/faq-routes'));
+app.use('/api/userdata', require('./routes/userdata-routes'));
 function requireAuth(req, res, next) { if (req.session && req.session.userId) return next(); return res.status(401).json({ error: 'Not authenticated' }); }
 app.get('/api/dashboard-data', requireAuth, (req, res) => res.json({ message: `Welcome back, ${req.session.username}!` }));
 app.use(require('./chat-routes'));

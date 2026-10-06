@@ -974,6 +974,56 @@
     }
     function saveJSON(key, value) {
       localStorage.setItem(key, JSON.stringify(value));
+      pushToServer(key, value);
+    }
+
+    // ---- Server sync: data follows the user to any device ----
+    const SYNC_KEYS = ['bytesoft_projects','bytesoft_meetings','bytesoft_profile',
+                       'bytesoft_leave_balances','bytesoft_leave_requests','bytesoft_attendance'];
+    let serverReady = false;            // don't upload until the first download finished
+    const pushTimers = {};
+    function pushToServer(key, value) {
+      if (!serverReady || !SYNC_KEYS.includes(key)) return;
+      clearTimeout(pushTimers[key]);
+      pushTimers[key] = setTimeout(() => {
+        fetch('/api/userdata/' + key, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ value })
+        }).catch(() => {});
+      }, 400);
+    }
+    async function syncFromServer() {
+      try {
+        const res = await fetch('/api/userdata');
+        if (!res.ok) return;
+        const server = (await res.json()).data || {};
+        for (const key of SYNC_KEYS) {
+          if (key in server) {
+            localStorage.setItem(key, JSON.stringify(server[key]));   // server wins
+          } else if (localStorage.getItem(key) !== null) {
+            // First time on the server: upload what this browser already has.
+            fetch('/api/userdata/' + key, {
+              method: 'PUT', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ value: JSON.parse(localStorage.getItem(key)) })
+            }).catch(() => {});
+          }
+        }
+        projects = loadJSON('bytesoft_projects', defaultProjects);
+        meetings = loadJSON('bytesoft_meetings', defaultMeetings);
+        profile = loadJSON('bytesoft_profile', { email:'', phone:'', role:'', location:'', about:'' });
+        leaveBalances = loadJSON('bytesoft_leave_balances', {});
+        leaveRequests = loadJSON('bytesoft_leave_requests', []);
+        profile.email = profile.email || currentUser.email || '';
+        renderUser();
+        renderDashboard();
+        renderLeaveBalance();
+        renderLeaveRequests();
+        if (window.bytesoftReloadAttendance) window.bytesoftReloadAttendance();
+      } catch (e) {
+        console.warn('Could not sync with server; using this browser only.', e);
+      } finally {
+        serverReady = true;
+      }
     }
     function esc(value) {
       return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
@@ -1057,12 +1107,13 @@
       document.getElementById('profile-about').value = profile.about || '';
     }
 
-    checkAuth();
+    checkAuth().then(syncFromServer);
 
     // ---- Logout ----
     document.getElementById('logout-btn').addEventListener('click', async () => {
       try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
       localStorage.removeItem('bytesoft_current_user');
+      SYNC_KEYS.forEach(k => localStorage.removeItem(k));
       window.location.href = '/index.html';
     });
 
@@ -2749,6 +2800,7 @@ chatMessages.addEventListener('click', e => {
         if (o) o.out = Date.now(); else (rec[dk(new Date())] = rec[dk(new Date())] || []).push({ in: Date.now(), out: null });
         saveJSON(KEY, rec); render();
       });
+      window.bytesoftReloadAttendance = () => { rec = loadJSON(KEY, {}); render(); };
       render(); setInterval(() => { if (openSess()) render(); }, 30000);
     })();
 
