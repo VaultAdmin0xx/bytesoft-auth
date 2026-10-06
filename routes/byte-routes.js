@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const hinglish = require('./byte-hinglish');   // flexible Hinglish brain (see that file to teach Byte more)
 
 // =====================================================
 // BYTE AI — FREE RULE-BASED ASSISTANT
@@ -293,25 +294,34 @@ function profileReply(text, data) {
   return `I couldn't find your ${key} in the dashboard profile data.`;
 }
 
-function leaveBalanceReply(data) {
-  const balances = data.leaveBalances;
-  const keys = Object.keys(balances);
+const MONTHLY_PAID_LEAVE_QUOTA = 2;   // keep in sync with dashboard.html
 
-  if (!keys.length) {
-    return 'I could not find your leave balance in the dashboard data.';
+function currentMonthKey(data) {
+  return /^\d{4}-\d{2}/.test(data.currentDate || '')
+    ? data.currentDate.slice(0, 7)
+    : new Date().toISOString().slice(0, 7);
+}
+
+function leaveBalanceReply(data, hi = false) {
+  const key = currentMonthKey(data);
+  const stored = Number(data.leaveBalances[key]);
+  const remaining = Number.isFinite(stored) ? stored : MONTHLY_PAID_LEAVE_QUOTA;
+  const days = n => Number(n.toFixed(1));
+  if (hi) {
+    return `Is mahine aapki ${days(remaining)} paid leave bachi hai (kul ${MONTHLY_PAID_LEAVE_QUOTA} milti hain). 🗓️ Leave lagani ho to bolo "leave apply karo".`;
   }
+  return `You have ${days(remaining)} paid leave day${remaining === 1 ? '' : 's'} left this month (out of ${MONTHLY_PAID_LEAVE_QUOTA}). 🗓️ Say "apply for leave" to request one.`;
+}
 
-  return 'Your leave balance details:\n' + keys.map(key => {
-    const value = balances[key];
-
-    if (value && typeof value === 'object') {
-      const amount =
-        value.remaining ?? value.balance ?? value.days ?? value.total;
-      return `${key}: ${amount ?? JSON.stringify(value)}`;
-    }
-
-    return `${key}: ${value}`;
-  }).join('\n');
+function leaveTakenReply(data, hi = false) {
+  const value = r => (r.type === 'half' ? 0.5 : 1);
+  const approved = data.leaveRequests.filter(r => r.status === 'approved');
+  const pending = data.leaveRequests.filter(r => r.status === 'pending').length;
+  const total = Number(approved.reduce((sum, r) => sum + value(r), 0).toFixed(1));
+  if (hi) {
+    return `Aapne ab tak ${total} din ki chhutti li hai (approved).` + (pending ? ` ${pending} request abhi pending hai.` : '');
+  }
+  return `You have taken ${total} day${total === 1 ? '' : 's'} of approved leave so far.` + (pending ? ` ${pending} request${pending === 1 ? ' is' : 's are'} still pending.` : '');
 }
 
 function leaveRequestsReply(data) {
@@ -321,13 +331,11 @@ function leaveRequestsReply(data) {
 
   return 'Here are your leave requests:\n' +
     data.leaveRequests.map((item, i) => {
-      const type = item.type || item.leaveType || item.title || 'Leave';
+      const type = item.type === 'half' ? 'Half day' : item.type === 'full' ? 'Full day' : (item.type || item.leaveType || item.title || 'Leave');
       const status = item.status || 'Status not specified';
-      const dates = item.startDate && item.endDate
-        ? ` (${item.startDate} to ${item.endDate})`
-        : '';
+      const date = item.date || (item.startDate && item.endDate ? `${item.startDate} to ${item.endDate}` : '');
 
-      return `${i + 1}. ${type}${dates} — ${status}`;
+      return `${i + 1}. ${date ? date + ' — ' : ''}${type} — ${status}`;
     }).join('\n');
 }
 
@@ -340,7 +348,7 @@ router.post('/chat', requireAuth, (req, res) => {
     }
 
     const normalized = normalizeText(original);
-    const hi = isHinglish(normalized);          // user wrote Hinglish -> reply in Hinglish
+    const hi = isHinglish(normalized) || hinglish.looksHinglish(normalized);          // user wrote Hinglish -> reply in Hinglish
     let text = applyHinglish(normalized);     // Hinglish phrases rewritten to English rules
     // Catch common conversational Hinglish requests that vary in word order.
     if (/\b(chh?utt?i|leave)\b/.test(normalized) && /\b(lagao|laga do|apply|request|leni|lena|chahiye|book)\b/.test(normalized)) {
@@ -363,6 +371,25 @@ router.post('/chat', requireAuth, (req, res) => {
     }
 
     const memory = req.session.byteMemory;
+
+    // ---- Hinglish brain: actions, flexible phrases, questions about one item, small talk ----
+    const act = hinglish.action(normalized, data);
+    if (act) {
+      return res.json({ action: act.action, ...act.payload, reply: hi ? act.replyHi : act.replyEn });
+    }
+
+    const smart = hinglish.rewrite(normalized);
+    if (smart === 'leave taken') {
+      return reply(res, leaveTakenReply(data, hi));
+    }
+    if (smart) {
+      text = smart;
+    } else {
+      const about = hinglish.answerAbout(normalized, data, hi);
+      if (about) return reply(res, about);
+      const talk = hinglish.smallTalk(normalized, hi);
+      if (talk) return reply(res, talk);
+    }
 
     // MULTI-REQUEST HANDLER
 
@@ -496,7 +523,7 @@ router.post('/chat', requireAuth, (req, res) => {
       }
 
       if (wantsLeaveBalance) {
-        sections.push(leaveBalanceReply(data));
+        sections.push(leaveBalanceReply(data, hi));
       }
 
       if (wantsLeaveRequests) {
@@ -923,7 +950,7 @@ router.post('/chat', requireAuth, (req, res) => {
       'leave days left',
       'leave quota'
     ])) {
-      return reply(res, leaveBalanceReply(data));
+      return reply(res, leaveBalanceReply(data, hi));
     }
 
     if (has(text, [
@@ -951,13 +978,8 @@ router.post('/chat', requireAuth, (req, res) => {
 
     // HELPFUL FALLBACK
 
-    return reply(
-      res,
-      t(
-        `I didn’t quite understand \"${original}\". Try asking about your projects, meetings, leave or profile — or say \"what can you do\" to see everything I can help with.`,
-        `Mujhe \"${original}\" samajh nahi aaya. Aap projects, meetings, leave ya profile ke baare mein pooch sakte ho — ya \"tum kya kar sakte ho\" likho.`
-      )
-    );
+    hinglish.logUnknown(original);   // saved to byte-unknown.log so you can teach Byte later
+    return reply(res, hinglish.clarify(normalized, hi) || hinglish.smartFallback(original, hi));
 
   } catch (error) {
     console.error('Byte AI error:', error);
